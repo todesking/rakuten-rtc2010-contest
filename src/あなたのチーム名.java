@@ -4,8 +4,8 @@ import jp.ac.washi.quinte.api.Player;
 import jp.ac.washi.quinte.api.RotateType;
 import jp.ac.washi.quinte.api.SoldierAction;
 
-public class ‚ ‚È‚½‚Ìƒ`[ƒ€–¼ extends Player {
-    public ‚ ‚È‚½‚Ìƒ`[ƒ€–¼() {
+public class ã‚ãªãŸã®ãƒãƒ¼ãƒ å extends Player {
+    public ã‚ãªãŸã®ãƒãƒ¼ãƒ å() {
     }
 
     @Override

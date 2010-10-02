@@ -68,15 +68,15 @@ public class RandomPlayer extends Player {
     }
 
     /**
-     * w’è‚µ‚½À•W‚©‚çw’è‚µ‚½F‚É‚Â‚¢‚Ä“’B‰Â”\‚È’n“_‚ğƒ`ƒFƒbƒN‚µ‚Ü‚·
+     * æŒ‡å®šã—ãŸåº§æ¨™ã‹ã‚‰æŒ‡å®šã—ãŸè‰²ã«ã¤ã„ã¦åˆ°é”å¯èƒ½ãªåœ°ç‚¹ã‚’ãƒã‚§ãƒƒã‚¯ã—ã¾ã™
      * 
      * @param x
-     *            ‹N“_‚Æ‚·‚éƒ}ƒX‚ÌxÀ•W
+     *            èµ·ç‚¹ã¨ã™ã‚‹ãƒã‚¹ã®xåº§æ¨™
      * @param y
-     *            ‹N“_‚Æ‚·‚éƒ}ƒX‚ÌyÀ•W
+     *            èµ·ç‚¹ã¨ã™ã‚‹ãƒã‚¹ã®yåº§æ¨™
      * @param country
-     *            ƒ}ƒX‚ÌF
-     * @return ˜AŒ‹‚µ‚Ä‚¢‚éƒ}ƒX‚Ì”
+     *            ãƒã‚¹ã®è‰²
+     * @return é€£çµã—ã¦ã„ã‚‹ãƒã‚¹ã®æ•°
      */
     private int combineCheck(final int x, final int y, final CountryInfo country) {
         int com = 0;
@@ -87,7 +87,7 @@ public class RandomPlayer extends Player {
             return com;
         }
 
-        // ©•ª‚ÌF‚Ìƒ}ƒX‚©ƒQ[ƒg‚Å‚ ‚ê‚ÎˆÚ“®‰Â”\
+        // è‡ªåˆ†ã®è‰²ã®ãƒã‚¹ã‹ã‚²ãƒ¼ãƒˆã§ã‚ã‚Œã°ç§»å‹•å¯èƒ½
         if ((map.getTile(x, y).getOwner() == country || map.getTile(x, y)
                 .isGate()) && check[y][x] == 0) {
             check[y][x] = 1;
@@ -101,7 +101,7 @@ public class RandomPlayer extends Player {
     }
 
     /**
-     * w’è‚µ‚½2’n“_ŠÔ‚ğ’Ê‚é‚½‚ß‚É•K—v‚Èƒ}ƒX‚ğ•ûŒü‚Ì”z—ñ‚Æ‚µ‚Ä•Ô‚µ‚Ü‚·
+     * æŒ‡å®šã—ãŸ2åœ°ç‚¹é–“ã‚’é€šã‚‹ãŸã‚ã«å¿…è¦ãªãƒã‚¹ã‚’æ–¹å‘ã®é…åˆ—ã¨ã—ã¦è¿”ã—ã¾ã™
      */
     private Direction[] getPath(final int startX, final int startY,
             final int distX, final int distY) {
@@ -118,13 +118,13 @@ public class RandomPlayer extends Player {
     }
 
     /**
-     * w’è‚µ‚½ƒ}ƒX‚ğ‹N“_‚Æ‚µ‚½2*2‚Ìƒ}ƒX‚·‚×‚Ä‚ª©•ª‚ÌF‚Ìƒ}ƒX‚Å‚ ‚é‚©‚Ç‚¤‚©‚ğ•Ô‚µ‚Ü‚·
+     * æŒ‡å®šã—ãŸãƒã‚¹ã‚’èµ·ç‚¹ã¨ã—ãŸ2*2ã®ãƒã‚¹ã™ã¹ã¦ãŒè‡ªåˆ†ã®è‰²ã®ãƒã‚¹ã§ã‚ã‚‹ã‹ã©ã†ã‹ã‚’è¿”ã—ã¾ã™
      * 
      * @param x
-     *            w’è‚·‚éƒ}ƒX‚ÌxÀ•W
+     *            æŒ‡å®šã™ã‚‹ãƒã‚¹ã®xåº§æ¨™
      * @param y
-     *            w’è‚·‚éƒ}ƒX‚ÌyÀ•W
-     * @return w’è‚µ‚½ƒ}ƒX‚ğ‹N“_‚Æ‚µ‚½2*2‚Ìƒ}ƒX‚·‚×‚Ä‚ª©•ª‚ÌF‚Ìƒ}ƒX‚Å‚ ‚éê‡‚Ítrue, ‚»‚¤‚Å‚È‚¢ê‡‚Ífalse
+     *            æŒ‡å®šã™ã‚‹ãƒã‚¹ã®yåº§æ¨™
+     * @return æŒ‡å®šã—ãŸãƒã‚¹ã‚’èµ·ç‚¹ã¨ã—ãŸ2*2ã®ãƒã‚¹ã™ã¹ã¦ãŒè‡ªåˆ†ã®è‰²ã®ãƒã‚¹ã§ã‚ã‚‹å ´åˆã¯true, ãã†ã§ãªã„å ´åˆã¯false
      */
     private boolean isCube(final int x, final int y) {
         if (x < 0 || 15 < x) {
@@ -154,19 +154,19 @@ public class RandomPlayer extends Player {
     }
 
     /**
-     * w’è‚µ‚½2’n“_ŠÔ‚Åw’è‚µ‚½F‚É‚Â‚¢‚Ä“’B‰Â”\‚©‚Ç‚¤‚©‚ğ•Ô‚µ‚Ü‚·
+     * æŒ‡å®šã—ãŸ2åœ°ç‚¹é–“ã§æŒ‡å®šã—ãŸè‰²ã«ã¤ã„ã¦åˆ°é”å¯èƒ½ã‹ã©ã†ã‹ã‚’è¿”ã—ã¾ã™
      * 
      * @param startX
-     *            ŠJn’n“_‚Æ‚·‚éƒ}ƒX‚ÌxÀ•W
+     *            é–‹å§‹åœ°ç‚¹ã¨ã™ã‚‹ãƒã‚¹ã®xåº§æ¨™
      * @param startY
-     *            ŠJn’n“_‚Æ‚·‚éƒ}ƒX‚ÌyÀ•W
+     *            é–‹å§‹åœ°ç‚¹ã¨ã™ã‚‹ãƒã‚¹ã®yåº§æ¨™
      * @param distX
-     *            I“_’n“_‚Æ‚·‚éƒ}ƒX‚ÌxÀ•W
+     *            çµ‚ç‚¹åœ°ç‚¹ã¨ã™ã‚‹ãƒã‚¹ã®xåº§æ¨™
      * @param distY
-     *            I“_’n“_‚Æ‚·‚éƒ}ƒX‚ÌyÀ•W
+     *            çµ‚ç‚¹åœ°ç‚¹ã¨ã™ã‚‹ãƒã‚¹ã®yåº§æ¨™
      * @param country
-     *            ƒ}ƒX‚ÌF
-     * @return w’è‚µ‚½2’n“_ŠÔ‚Åw’è‚µ‚½F‚É‚Â‚¢‚Ä“’B‰Â”\‚Å‚ ‚ê‚Îtrue, ‚»‚¤‚Å‚È‚¢ê‡‚Ífalse
+     *            ãƒã‚¹ã®è‰²
+     * @return æŒ‡å®šã—ãŸ2åœ°ç‚¹é–“ã§æŒ‡å®šã—ãŸè‰²ã«ã¤ã„ã¦åˆ°é”å¯èƒ½ã§ã‚ã‚Œã°true, ãã†ã§ãªã„å ´åˆã¯false
      */
     private boolean isReachable(final int startX, final int startY,
             final int distX, final int distY, final CountryInfo country) {
@@ -179,15 +179,15 @@ public class RandomPlayer extends Player {
     }
 
     /**
-     * w’è‚µ‚½2’n“_ŠÔ‚Åw’è‚µ‚½F‚É‚Â‚¢‚Ä“’B‰Â”\‚©‚Ç‚¤‚©‚ğ•Ô‚µ‚Ü‚·
+     * æŒ‡å®šã—ãŸ2åœ°ç‚¹é–“ã§æŒ‡å®šã—ãŸè‰²ã«ã¤ã„ã¦åˆ°é”å¯èƒ½ã‹ã©ã†ã‹ã‚’è¿”ã—ã¾ã™
      * 
      * @param start
-     *            ŠJn’n“_‚Æ‚·‚éƒ}ƒX‚ğ¦‚·ƒ|ƒCƒ“ƒg
+     *            é–‹å§‹åœ°ç‚¹ã¨ã™ã‚‹ãƒã‚¹ã‚’ç¤ºã™ãƒã‚¤ãƒ³ãƒˆ
      * @param dist
-     *            I“_’n“_‚Æ‚·‚éƒ}ƒX‚ğ¦‚·ƒ|ƒCƒ“ƒg
+     *            çµ‚ç‚¹åœ°ç‚¹ã¨ã™ã‚‹ãƒã‚¹ã‚’ç¤ºã™ãƒã‚¤ãƒ³ãƒˆ
      * @param country
-     *            ƒ}ƒX‚ÌF
-     * @return w’è‚µ‚½2’n“_ŠÔ‚Åw’è‚µ‚½F‚É‚Â‚¢‚Ä“’B‰Â”\‚Å‚ ‚ê‚Îtrue, ‚»‚¤‚Å‚È‚¢ê‡‚Ífalse
+     *            ãƒã‚¹ã®è‰²
+     * @return æŒ‡å®šã—ãŸ2åœ°ç‚¹é–“ã§æŒ‡å®šã—ãŸè‰²ã«ã¤ã„ã¦åˆ°é”å¯èƒ½ã§ã‚ã‚Œã°true, ãã†ã§ãªã„å ´åˆã¯false
      */
     private boolean isReachable(final Point start, final Point dist,
             final CountryInfo country) {
@@ -195,15 +195,15 @@ public class RandomPlayer extends Player {
     }
 
     /**
-     * w’è‚µ‚½ƒ}ƒX‚ğ‰º‚ÉˆÚ“®‚³‚¹‚Ü‚·
+     * æŒ‡å®šã—ãŸãƒã‚¹ã‚’ä¸‹ã«ç§»å‹•ã•ã›ã¾ã™
      * 
      * @param x
-     *            ˆÚ“®‚³‚¹‚éƒ}ƒX‚ÌxÀ•W
+     *            ç§»å‹•ã•ã›ã‚‹ãƒã‚¹ã®xåº§æ¨™
      * @param y
-     *            ˆÚ“®‚³‚¹‚éƒ}ƒX‚ÌyÀ•W
+     *            ç§»å‹•ã•ã›ã‚‹ãƒã‚¹ã®yåº§æ¨™
      * @param LorR
-     *            ˆÚ“®‚³‚¹‚éƒ}ƒX‚æ‚èƒJ[ƒ\ƒ‹‚ª‰E‚É‚ ‚é‚©¶‚É‚ ‚é‚©‚ğw’è‚µ‚Ü‚·
-     * @return ˆÚ“®‚É•K—v‚ÈPlayerAction‚ğ•Ô‚µ‚Ü‚·
+     *            ç§»å‹•ã•ã›ã‚‹ãƒã‚¹ã‚ˆã‚Šã‚«ãƒ¼ã‚½ãƒ«ãŒå³ã«ã‚ã‚‹ã‹å·¦ã«ã‚ã‚‹ã‹ã‚’æŒ‡å®šã—ã¾ã™
+     * @return ç§»å‹•ã«å¿…è¦ãªPlayerActionã‚’è¿”ã—ã¾ã™
      */
     private CursorAction moveToDown(final int x, final int y,
             final Direction LorR) {
@@ -224,15 +224,15 @@ public class RandomPlayer extends Player {
     }
 
     /**
-     * w’è‚µ‚½ƒ}ƒX‚ğ¶‚ÉˆÚ“®‚³‚¹‚Ü‚·
+     * æŒ‡å®šã—ãŸãƒã‚¹ã‚’å·¦ã«ç§»å‹•ã•ã›ã¾ã™
      * 
      * @param x
-     *            ˆÚ“®‚³‚¹‚éƒ}ƒX‚ÌxÀ•W
+     *            ç§»å‹•ã•ã›ã‚‹ãƒã‚¹ã®xåº§æ¨™
      * @param y
-     *            ˆÚ“®‚³‚¹‚éƒ}ƒX‚ÌyÀ•W
+     *            ç§»å‹•ã•ã›ã‚‹ãƒã‚¹ã®yåº§æ¨™
      * @param NorS
-     *            ˆÚ“®‚³‚¹‚éƒ}ƒX‚æ‚èƒJ[ƒ\ƒ‹‚ªã‚É‚ ‚é‚©‰º‚É‚ ‚é‚©‚ğw’è‚µ‚Ü‚·
-     * @return ˆÚ“®‚É•K—v‚ÈPlayerAction‚ğ•Ô‚µ‚Ü‚·
+     *            ç§»å‹•ã•ã›ã‚‹ãƒã‚¹ã‚ˆã‚Šã‚«ãƒ¼ã‚½ãƒ«ãŒä¸Šã«ã‚ã‚‹ã‹ä¸‹ã«ã‚ã‚‹ã‹ã‚’æŒ‡å®šã—ã¾ã™
+     * @return ç§»å‹•ã«å¿…è¦ãªPlayerActionã‚’è¿”ã—ã¾ã™
      */
     private CursorAction moveToLeft(final int x, final int y,
             final Direction UorD) {
@@ -255,15 +255,15 @@ public class RandomPlayer extends Player {
     }
 
     /**
-     * w’è‚µ‚½ƒ}ƒX‚ğ‰E‚ÉˆÚ“®‚³‚¹‚Ü‚·
+     * æŒ‡å®šã—ãŸãƒã‚¹ã‚’å³ã«ç§»å‹•ã•ã›ã¾ã™
      * 
      * @param x
-     *            ˆÚ“®‚³‚¹‚éƒ}ƒX‚ÌxÀ•W
+     *            ç§»å‹•ã•ã›ã‚‹ãƒã‚¹ã®xåº§æ¨™
      * @param y
-     *            ˆÚ“®‚³‚¹‚éƒ}ƒX‚ÌyÀ•W
+     *            ç§»å‹•ã•ã›ã‚‹ãƒã‚¹ã®yåº§æ¨™
      * @param UorD
-     *            ˆÚ“®‚³‚¹‚éƒ}ƒX‚æ‚èƒJ[ƒ\ƒ‹‚ªã‚É‚ ‚é‚©‰º‚É‚ ‚é‚©‚ğw’è‚µ‚Ü‚·
-     * @return ˆÚ“®‚É•K—v‚ÈPlayerAction‚ğ•Ô‚µ‚Ü‚·
+     *            ç§»å‹•ã•ã›ã‚‹ãƒã‚¹ã‚ˆã‚Šã‚«ãƒ¼ã‚½ãƒ«ãŒä¸Šã«ã‚ã‚‹ã‹ä¸‹ã«ã‚ã‚‹ã‹ã‚’æŒ‡å®šã—ã¾ã™
+     * @return ç§»å‹•ã«å¿…è¦ãªPlayerActionã‚’è¿”ã—ã¾ã™
      */
     private CursorAction moveToRight(final int x, final int y,
             final Direction UorD) {
@@ -285,15 +285,15 @@ public class RandomPlayer extends Player {
     }
 
     /**
-     * w’è‚µ‚½ƒ}ƒX‚ğã‚ÉˆÚ“®‚³‚¹‚Ü‚·
+     * æŒ‡å®šã—ãŸãƒã‚¹ã‚’ä¸Šã«ç§»å‹•ã•ã›ã¾ã™
      * 
      * @param x
-     *            ˆÚ“®‚³‚¹‚éƒ}ƒX‚ÌxÀ•W
+     *            ç§»å‹•ã•ã›ã‚‹ãƒã‚¹ã®xåº§æ¨™
      * @param y
-     *            ˆÚ“®‚³‚¹‚éƒ}ƒX‚ÌyÀ•W
+     *            ç§»å‹•ã•ã›ã‚‹ãƒã‚¹ã®yåº§æ¨™
      * @param LorR
-     *            ˆÚ“®‚³‚¹‚éƒ}ƒX‚æ‚èƒJ[ƒ\ƒ‹‚ª‰E‚É‚ ‚é‚©¶‚É‚ ‚é‚©‚ğw’è‚µ‚Ü‚·
-     * @return ˆÚ“®‚É•K—v‚ÈPlayerAction‚ğ•Ô‚µ‚Ü‚·
+     *            ç§»å‹•ã•ã›ã‚‹ãƒã‚¹ã‚ˆã‚Šã‚«ãƒ¼ã‚½ãƒ«ãŒå³ã«ã‚ã‚‹ã‹å·¦ã«ã‚ã‚‹ã‹ã‚’æŒ‡å®šã—ã¾ã™
+     * @return ç§»å‹•ã«å¿…è¦ãªPlayerActionã‚’è¿”ã—ã¾ã™
      */
     private CursorAction moveToUp(final int x, final int y, final Direction LorR) {
         if (LorR == Direction.LEFT) {
@@ -316,22 +316,22 @@ public class RandomPlayer extends Player {
     @Override
     public CursorAction nextCursorAction(final GameInfo gameInfo) {
 
-        // ƒQ[ƒ€ŠÂ‹«‚ÉŠÖ‚·‚éî•ñ‚ÌXV
+        // ã‚²ãƒ¼ãƒ ç’°å¢ƒã«é–¢ã™ã‚‹æƒ…å ±ã®æ›´æ–°
         map = gameInfo.getMap();
         myCountry = gameInfo.getMyCountry();
         leftCountry = gameInfo.getLeftCountry();
         oppositeCountry = gameInfo.getOppositeCountry();
         rightCountry = gameInfo.getRightCountry();
 
-        // ˆÚ“®‚³‚¹‚éƒ}ƒX‚ÌŒó•â‚ÌƒŠƒXƒg‚ğƒNƒŠƒA
+        // ç§»å‹•ã•ã›ã‚‹ãƒã‚¹ã®å€™è£œã®ãƒªã‚¹ãƒˆã‚’ã‚¯ãƒªã‚¢
         candidatePoints.clear();
 
-        // s“®‚ªƒ‹[ƒv‚µ‚Ä‚¢‚È‚¢‚©ƒ`ƒFƒbƒN
+        // è¡Œå‹•ãŒãƒ«ãƒ¼ãƒ—ã—ã¦ã„ãªã„ã‹ãƒã‚§ãƒƒã‚¯
         checkInfiniteLoopAction();
 
-        // ì‚é“¹‚ªŒˆ‚Ü‚Á‚Ä‚¢‚éê‡
+        // ä½œã‚‹é“ãŒæ±ºã¾ã£ã¦ã„ã‚‹å ´åˆ
         if (road != null) {
-            // ©•ª‚ÌF‚ğ‰^‚ñ‚Å‚­‚éŸ‚Ìƒ}ƒX‚ğŒˆ‚ß‚é(nextPoint‚ÌŒˆ’è)
+            // è‡ªåˆ†ã®è‰²ã‚’é‹ã‚“ã§ãã‚‹æ¬¡ã®ãƒã‚¹ã‚’æ±ºã‚ã‚‹(nextPointã®æ±ºå®š)
             while (map.getTile(nextPoint.x, nextPoint.y).getOwner() == myCountry
                     || map.getTile(nextPoint.x, nextPoint.y).isGate()) {
                 curPoint = nextPoint;
@@ -339,7 +339,7 @@ public class RandomPlayer extends Player {
                 if (iRoad == road.length) {
                     road = null;
                     iRoad = 0;
-                    return null; // –Ú“I’n‚É“’B‚µ‚½‚çA‚»‚Ìƒ^[ƒ“‚Í‚Æ‚è‚ ‚¦‚¸‰½‚à‚µ‚È‚¢
+                    return null; // ç›®çš„åœ°ã«åˆ°é”ã—ãŸã‚‰ã€ãã®ã‚¿ãƒ¼ãƒ³ã¯ã¨ã‚Šã‚ãˆãšä½•ã‚‚ã—ãªã„
                 } else {
                     nextPoint = road[iRoad].moveFrom(curPoint);
                     direction = road[iRoad];
@@ -363,7 +363,7 @@ public class RandomPlayer extends Player {
             default:
             }
 
-            // ˆÚ“®‚³‚¹‚éŒó•âƒ}ƒX‚ª‚ ‚éê‡
+            // ç§»å‹•ã•ã›ã‚‹å€™è£œãƒã‚¹ãŒã‚ã‚‹å ´åˆ
             if (candidatePoints.size() != 0) {
 
                 Point p = null;
@@ -373,16 +373,16 @@ public class RandomPlayer extends Player {
                 while (iCandidate < candidatePoints.size()) {
                     p = candidatePoints.get(iCandidate++);
 
-                    // ‰ñ“]‚Å‚«‚È‚¢ê‡‚ÍŸ‚ÌŒó•â‚Ö
+                    // å›è»¢ã§ããªã„å ´åˆã¯æ¬¡ã®å€™è£œã¸
                     if (!map.canRotate(p)) {
                         continue;
                     }
-                    // –³ŒÀƒ‹[ƒv‰ñ”ğƒ|ƒCƒ“ƒg‚¾‚Á‚½ê‡‚ÍŸ‚ÌŒó•â‚Ö
+                    // ç„¡é™ãƒ«ãƒ¼ãƒ—å›é¿ãƒã‚¤ãƒ³ãƒˆã ã£ãŸå ´åˆã¯æ¬¡ã®å€™è£œã¸
                     if (ignorePoint.x == p.x && ignorePoint.y == p.y) {
                         continue;
                     }
 
-                    // Œó•âƒ}ƒX‚ğnextPoint‚É‹ß‚Ã‚­‚æ‚¤‚ÉˆÚ“®
+                    // å€™è£œãƒã‚¹ã‚’nextPointã«è¿‘ã¥ãã‚ˆã†ã«ç§»å‹•
                     switch (direction) {
                     case DOWN:
                         if (nextPoint.y - p.y > 0) {
@@ -435,7 +435,7 @@ public class RandomPlayer extends Player {
                     default:
                         action = null;
                     }
-                    // ˆÚ“®‚³‚¹‚éƒ}ƒX‚ªŒˆ’è‚µ‚½‚çwhileƒ‹[ƒv‚ğ”²‚¯‚é
+                    // ç§»å‹•ã•ã›ã‚‹ãƒã‚¹ãŒæ±ºå®šã—ãŸã‚‰whileãƒ«ãƒ¼ãƒ—ã‚’æŠœã‘ã‚‹
                     if (action != null) {
                         break;
                     }
@@ -455,7 +455,7 @@ public class RandomPlayer extends Player {
         // road == null
         else {
 
-            // “G‘‚Ì–å‚Ìˆê——‚ğì¬‚µ‚Ü‚·
+            // æ•µå›½ã®é–€ã®ä¸€è¦§ã‚’ä½œæˆã—ã¾ã™
             final Point[] gateList = { map.getCenterGateLocation(leftCountry),
                     map.getCenterGateLocation(oppositeCountry),
                     map.getCenterGateLocation(rightCountry),
@@ -466,8 +466,8 @@ public class RandomPlayer extends Player {
                     map.getLeftGateLocation(rightCountry),
                     map.getRightGateLocation(rightCountry) };
 
-            // ƒQ[ƒg‚ğ‚P‚Âƒ‰ƒ“ƒ_ƒ€‚É‘I‚ñ‚Å“¹‚ğì‚è‚Ü‚·
-            final int i = (int) (Math.random() * 9); // 0`8
+            // ã‚²ãƒ¼ãƒˆã‚’ï¼‘ã¤ãƒ©ãƒ³ãƒ€ãƒ ã«é¸ã‚“ã§é“ã‚’ä½œã‚Šã¾ã™
+            final int i = (int) (Math.random() * 9); // 0ã€œ8
 
             road = this.getPath(map.getSoldier(myCountry).getLocation(),
                     gateList[i]);
@@ -482,14 +482,14 @@ public class RandomPlayer extends Player {
     @Override
     public SoldierAction nextSoldierAction(final GameInfo gameInfo) {
 
-        // ƒQ[ƒ€ŠÂ‹«‚ÉŠÖ‚·‚éî•ñ‚ÌXV
+        // ã‚²ãƒ¼ãƒ ç’°å¢ƒã«é–¢ã™ã‚‹æƒ…å ±ã®æ›´æ–°
         map = gameInfo.getMap();
         myCountry = gameInfo.getMyCountry();
         leftCountry = gameInfo.getLeftCountry();
         oppositeCountry = gameInfo.getOppositeCountry();
         rightCountry = gameInfo.getRightCountry();
 
-        // •ºm‚Ìs“®ƒ‹[ƒg‚ª‚ ‚éê‡
+        // å…µå£«ã®è¡Œå‹•ãƒ«ãƒ¼ãƒˆãŒã‚ã‚‹å ´åˆ
         if (soldierPath != null) {
             if (iSoldierPath < soldierPath.length) {
                 return SoldierAction.fromDirection(soldierPath[iSoldierPath++]);
@@ -502,10 +502,10 @@ public class RandomPlayer extends Player {
         // soldierPath == null
         else {
 
-            // ©•ª‚Ì•ºm‚ÌˆÊ’u‚ğæ“¾‚µ‚Ü‚·
+            // è‡ªåˆ†ã®å…µå£«ã®ä½ç½®ã‚’å–å¾—ã—ã¾ã™
             final Point soldierLocation = map.getSoldier(myCountry)
                     .getLocation();
-            // “G‘‚Ì–å‚Ìˆê——‚ğì¬‚µ‚Ü‚·
+            // æ•µå›½ã®é–€ã®ä¸€è¦§ã‚’ä½œæˆã—ã¾ã™
             final Point[] gateList = { map.getCenterGateLocation(leftCountry),
                     map.getCenterGateLocation(oppositeCountry),
                     map.getCenterGateLocation(rightCountry),
@@ -516,7 +516,7 @@ public class RandomPlayer extends Player {
                     map.getLeftGateLocation(rightCountry),
                     map.getRightGateLocation(rightCountry) };
 
-            // “’B‰Â”\‚È–å‚Ö‚ÌƒpƒX‚ğæ“¾‚µ‚Ü‚·
+            // åˆ°é”å¯èƒ½ãªé–€ã¸ã®ãƒ‘ã‚¹ã‚’å–å¾—ã—ã¾ã™
             for (final Point target : gateList) {
                 if (this.isReachable(soldierLocation, target, myCountry)) {
                     soldierPath = PathSearch.getPath(map, soldierLocation,
@@ -527,8 +527,8 @@ public class RandomPlayer extends Player {
 
         }
 
-        // “’B‰Â”\‚È–å‚ª‚È‚¯‚ê‚Îƒ‰ƒ“ƒ_ƒ€‚És“®‚µ‚Ü‚·
-        final int rnd = (int) (Math.random() * 4) + 1; // 1`4
+        // åˆ°é”å¯èƒ½ãªé–€ãŒãªã‘ã‚Œã°ãƒ©ãƒ³ãƒ€ãƒ ã«è¡Œå‹•ã—ã¾ã™
+        final int rnd = (int) (Math.random() * 4) + 1; // 1ã€œ4
         switch (rnd) {
         case 1:
             return SoldierAction.UP;
@@ -545,12 +545,12 @@ public class RandomPlayer extends Player {
     }
 
     /**
-     * w’è‚µ‚½À•W‚©‚ç‰E•ûŒü‚É‚ ‚é©•ª‚ÌF‚Ìƒ}ƒX‚ğæ“¾‚µ‚Ü‚·
+     * æŒ‡å®šã—ãŸåº§æ¨™ã‹ã‚‰å³æ–¹å‘ã«ã‚ã‚‹è‡ªåˆ†ã®è‰²ã®ãƒã‚¹ã‚’å–å¾—ã—ã¾ã™
      * 
      * @param x
-     *            ‹N“_‚Æ‚·‚éƒ}ƒX‚ÌxÀ•W
+     *            èµ·ç‚¹ã¨ã™ã‚‹ãƒã‚¹ã®xåº§æ¨™
      * @param y
-     *            ‹N“_‚Æ‚·‚éƒ}ƒX‚ÌyÀ•W
+     *            èµ·ç‚¹ã¨ã™ã‚‹ãƒã‚¹ã®yåº§æ¨™
      */
     private void searchBlockEast(final int x, final int y) {
         for (int depth = 1; depth < MAX_SEARCH_DEPTH; depth++) {
@@ -573,19 +573,19 @@ public class RandomPlayer extends Player {
                 }
             }
         }
-        // ‰E•ûŒü‚ÉŒó•â‚ªŒ©‚Â‚©‚ç‚È‚¢ê‡A•ûŒü‚©‚çŒó•â‚ğ’T‚µ‚Ü‚·
+        // å³æ–¹å‘ã«å€™è£œãŒè¦‹ã¤ã‹ã‚‰ãªã„å ´åˆã€æ–¹å‘ã‹ã‚‰å€™è£œã‚’æ¢ã—ã¾ã™
         if (candidatePoints.size() == 0) {
             searchBlockSouth(x, y);
         }
     }
 
     /**
-     * w’è‚µ‚½À•W‚©‚çã•ûŒü‚É‚ ‚é©•ª‚ÌF‚Ìƒ}ƒX‚ğæ“¾‚µ‚Ü‚·
+     * æŒ‡å®šã—ãŸåº§æ¨™ã‹ã‚‰ä¸Šæ–¹å‘ã«ã‚ã‚‹è‡ªåˆ†ã®è‰²ã®ãƒã‚¹ã‚’å–å¾—ã—ã¾ã™
      * 
      * @param x
-     *            ‹N“_‚Æ‚·‚éƒ}ƒX‚ÌxÀ•W
+     *            èµ·ç‚¹ã¨ã™ã‚‹ãƒã‚¹ã®xåº§æ¨™
      * @param y
-     *            ‹N“_‚Æ‚·‚éƒ}ƒX‚ÌyÀ•W
+     *            èµ·ç‚¹ã¨ã™ã‚‹ãƒã‚¹ã®yåº§æ¨™
      */
     private void searchBlockNorth(final int x, final int y) {
         for (int depth = 1; depth < MAX_SEARCH_DEPTH; depth++) {
@@ -608,25 +608,25 @@ public class RandomPlayer extends Player {
                 }
             }
         }
-        // ã•ûŒü‚ÉŒó•â‚ªŒ©‚Â‚©‚ç‚È‚¢ê‡A‰E•ûŒü‚©‚çŒó•â‚ğ’T‚µ‚Ü‚·
+        // ä¸Šæ–¹å‘ã«å€™è£œãŒè¦‹ã¤ã‹ã‚‰ãªã„å ´åˆã€å³æ–¹å‘ã‹ã‚‰å€™è£œã‚’æ¢ã—ã¾ã™
         if (candidatePoints.size() == 0) {
             searchBlockEast(x, y);
         }
     }
 
     /**
-     * w’è‚µ‚½À•W‚©‚ç‰º•ûŒü‚É‚ ‚é©•ª‚ÌF‚Ìƒ}ƒX‚ğæ“¾‚µ‚Ü‚·
+     * æŒ‡å®šã—ãŸåº§æ¨™ã‹ã‚‰ä¸‹æ–¹å‘ã«ã‚ã‚‹è‡ªåˆ†ã®è‰²ã®ãƒã‚¹ã‚’å–å¾—ã—ã¾ã™
      * 
      * @param x
-     *            ‹N“_‚Æ‚·‚éƒ}ƒX‚ÌxÀ•W
+     *            èµ·ç‚¹ã¨ã™ã‚‹ãƒã‚¹ã®xåº§æ¨™
      * @param y
-     *            ‹N“_‚Æ‚·‚éƒ}ƒX‚ÌyÀ•W
+     *            èµ·ç‚¹ã¨ã™ã‚‹ãƒã‚¹ã®yåº§æ¨™
      */
     private void searchBlockSouth(final int x, final int y) {
         for (int depth = 1; depth < MAX_SEARCH_DEPTH; depth++) {
             for (int dy = 0; dy < depth + 1; dy++) {
                 for (int dx = -depth + dy; dx < depth - dy + 1; dx++) {
-                    // TODO «—ˆ“I‚É‚ÍisAvailable‚É’u‚«Š·‚¦‚ç‚ê‚é‚Æv‚¤
+                    // TODO å°†æ¥çš„ã«ã¯isAvailableã«ç½®ãæ›ãˆã‚‰ã‚Œã‚‹ã¨æ€ã†
                     if (x + dx < 1 || 15 < x + dx) {
                         continue;
                     }
@@ -644,19 +644,19 @@ public class RandomPlayer extends Player {
                 }
             }
         }
-        // ‰º•ûŒü‚ÉŒó•â‚ªŒ©‚Â‚©‚ç‚È‚¢ê‡A¶•ûŒü‚©‚çŒó•â‚ğ’T‚µ‚Ü‚·
+        // ä¸‹æ–¹å‘ã«å€™è£œãŒè¦‹ã¤ã‹ã‚‰ãªã„å ´åˆã€å·¦æ–¹å‘ã‹ã‚‰å€™è£œã‚’æ¢ã—ã¾ã™
         if (candidatePoints.size() == 0) {
             searchBlockWest(x, y);
         }
     }
 
     /**
-     * w’è‚µ‚½À•W‚©‚ç¶•ûŒü‚É‚ ‚é©•ª‚ÌF‚Ìƒ}ƒX‚ğæ“¾‚µ‚Ü‚·
+     * æŒ‡å®šã—ãŸåº§æ¨™ã‹ã‚‰å·¦æ–¹å‘ã«ã‚ã‚‹è‡ªåˆ†ã®è‰²ã®ãƒã‚¹ã‚’å–å¾—ã—ã¾ã™
      * 
      * @param x
-     *            ‹N“_‚Æ‚·‚éƒ}ƒX‚ÌxÀ•W
+     *            èµ·ç‚¹ã¨ã™ã‚‹ãƒã‚¹ã®xåº§æ¨™
      * @param y
-     *            ‹N“_‚Æ‚·‚éƒ}ƒX‚ÌyÀ•W
+     *            èµ·ç‚¹ã¨ã™ã‚‹ãƒã‚¹ã®yåº§æ¨™
      */
     private void searchBlockWest(final int x, final int y) {
         for (int depth = 1; depth < MAX_SEARCH_DEPTH; depth++) {
@@ -679,7 +679,7 @@ public class RandomPlayer extends Player {
                 }
             }
         }
-        // ¶•ûŒü‚ÉŒó•â‚ªŒ©‚Â‚©‚ç‚È‚¢ê‡Aã•ûŒü‚©‚çŒó•â‚ğ’T‚µ‚Ü‚·
+        // å·¦æ–¹å‘ã«å€™è£œãŒè¦‹ã¤ã‹ã‚‰ãªã„å ´åˆã€ä¸Šæ–¹å‘ã‹ã‚‰å€™è£œã‚’æ¢ã—ã¾ã™
         if (candidatePoints.size() == 0) {
             searchBlockNorth(x, y);
         }

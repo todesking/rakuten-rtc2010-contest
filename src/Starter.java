@@ -8,14 +8,14 @@ public class Starter {
      * @param args
      */
     public static void main(String[] args) {
-        Player p1 = new ‚ ‚È‚½‚Ìƒ`[ƒ€–¼();
+        Player p1 = new ã‚ãªãŸã®ãƒãƒ¼ãƒ å();
         Player p2 = new RandomPlayer();
         Player p3 = new HighScorePlayer();
         Player p4 = new SkeltonPlayer();
 
         GameOption option = new GameOption();
         option.setEnableSound(true);
-        // setEnableThreadToLimitTime(false) ‚ÍƒXƒŒƒbƒh‚ğg‚í‚È‚¢‚½‚ßAƒfƒoƒbƒO‚µ‚â‚·‚¢ŠÂ‹«‚É‚È‚è‚Ü‚·
+        // setEnableThreadToLimitTime(false) ã¯ã‚¹ãƒ¬ãƒƒãƒ‰ã‚’ä½¿ã‚ãªã„ãŸã‚ã€ãƒ‡ãƒãƒƒã‚°ã—ã‚„ã™ã„ç’°å¢ƒã«ãªã‚Šã¾ã™
         option.setEnableThreadToLimitTime(true);
         GameStarter.start(p1, p2, p3, p4, option);
     }

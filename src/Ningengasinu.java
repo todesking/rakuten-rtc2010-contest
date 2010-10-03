@@ -12,8 +12,8 @@ public class Ningengasinu extends Player {
 
 	@Override
 	public CursorAction nextCursorAction(GameInfo info) {
-		for (int x = 0; x < info.getMap().getSize(); x++) {
-			for (int y = 0; y < info.getMap().getSize(); y++) {
+		for (int y = 0; y < info.getMap().getSize(); y++) {
+			for (int x = 0; x < info.getMap().getSize(); x++) {
 				final TileInfo tile = info.getMap().getTile(Point.create(x, y));
 				final char c;
 				switch (tile.getType()) {

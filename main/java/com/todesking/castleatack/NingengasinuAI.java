@@ -151,7 +151,7 @@ public class NingengasinuAI implements PlayerAI {
 
 	private SoldierAction getSoldierAction(GameInfo info,
 			int[][] targetTilePlacement) {
-		return null;
+		return SoldierAction.NONE;
 	}
 
 	private CursorAction getCursorAction(GameInfo info,

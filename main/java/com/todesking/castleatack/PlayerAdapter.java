@@ -3,6 +3,7 @@ package com.todesking.castleatack;
 import jp.ac.washi.quinte.api.CursorAction;
 import jp.ac.washi.quinte.api.GameInfo;
 import jp.ac.washi.quinte.api.Player;
+import jp.ac.washi.quinte.api.Point;
 import jp.ac.washi.quinte.api.RotateType;
 import jp.ac.washi.quinte.api.SoldierAction;
 
@@ -24,8 +25,40 @@ public class PlayerAdapter extends Player {
 		if (turnID == info.getTime())
 			return;
 		actionCommand = ai.getNextAction(info);
+		logAction(actionCommand);
 		if (actionCommand == null)
 			actionCommand = DO_NOTHING;
+		validate(actionCommand, info);
+	}
+
+	private void logAction(ActionCommand ac) {
+		System.err.println("cursor: " + inspect(ac.cursorAction));
+		System.err.println("soldier: " + ac.soldierAction);
+	}
+
+	private static String inspect(CursorAction ca) {
+		if (ca.getType() == RotateType.NONE)
+			return "(none)";
+		return "(" + ca.getX() + "," + ca.getY() + "), " + ca.getType();
+	}
+
+	private void validate(ActionCommand actionCommand, GameInfo info) {
+		final CursorAction ca = actionCommand.cursorAction;
+		check(info.getMap().canRotate(ca.getLocation()), "could not rotate");
+
+		final SoldierAction sa = actionCommand.soldierAction;
+		final Point currentSoldierPosition = info.getMySoldier().getLocation();
+		final Point nextSoldierPosition =
+			sa == SoldierAction.NONE ? currentSoldierPosition : sa
+				.toDirection()
+				.moveFrom(currentSoldierPosition);
+		check(info.getMap().getTile(nextSoldierPosition).getOwner() == info
+			.getMyCountry(), "could not move");
+	}
+
+	private static void check(boolean condition, String msg) {
+		if (!condition)
+			throw new AssertionError(msg);
 	}
 
 	@Override

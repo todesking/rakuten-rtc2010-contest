@@ -23,36 +23,42 @@ public class Util {
 	 */
 	public static Iterable<Point> spiralPoints(final int size,
 			final Point center) {
+		if (size % 2 == 0)
+			throw new IllegalArgumentException();
 		return new Iterable<Point>() {
 			@Override
 			public Iterator<Point> iterator() {
 				return new UnmodifiableIterator<Point>() {
-					int i1 = 0;
-					int i2 = 0;
+					int index = 1;
+					int x = 1;
+					int y = 0;
 
 					@Override
 					public boolean hasNext() {
-						return true;
+						return index <= size / 2 + 1;
 					}
 
 					@Override
 					public Point next() {
 						// エレガントじゃないなー
-						i2++;
-						if (i1 * 8 <= i2) {
-							i1++;
-							i2 = 0;
+						final Point p = new Point(x, y);
+						increment();
+						return p;
+					}
+
+					private void increment() {
+						if (y < index && x == index) {
+							y++;
+						} else if (y == index && -index < x) {
+							x--;
+						} else if (x == -index && -index < y) {
+							y--;
+						} else if (y == -index && x < index) {
+							x++;
 						}
-						if (i2 <= i1) {
-							return center.add(new Point(i1, i2));
-						} else if (i2 <= i1 * 3) {
-							return center.add(new Point(i2 - i1 * 2, i1));
-						} else if (i2 <= i1 * 5) {
-							return center.add(new Point(-i1, i2 - i1 * 4));
-						} else if (i2 <= i1 * 7) {
-							return center.add(new Point(i2 - i1 * 6, -i1));
-						} else {
-							return center.add(new Point(i2 - i1 * 8, i1));
+						if (y == 0 && x == index) {
+							index++;
+							x = index;
 						}
 					}
 				};

@@ -17,13 +17,17 @@ public class UtilTest {
 	public void test_apiralPoints() throws Exception {
 		assertThat(spp(1, 0, 0).size(), is(8));
 		assertThat(spp(1, 0, 0).get(0), is(p(1, 0)));
-		assertThat(spp(1, 0, 0).get(1), is(p(1, 1)));
-		assertThat(spp(1, 0, 0).get(3), is(p(-1, 1)));
-		assertThat(spp(1, 0, 0).get(5), is(p(-1, -1)));
-		assertThat(spp(1, 0, 0).get(7), is(p(1, -1)));
 		assertThat(spp(1, 0, 0), is(Arrays.asList(p(1, 0), p(1, 1), p(0, 1), p(
 			-1,
 			1), p(-1, 0), p(-1, -1), p(0, -1), p(1, -1))));
+
+		assertThat(spp(1, 10, 10).get(1), is(p(11, 11)));
+
+		assertThat(spp(2, 0, 0).size(), is(24));
+		assertThat(spp(2, 0, 0).get(0), is(p(1, 0)));
+		assertThat(spp(2, 0, 0).get(8), is(p(2, 0)));
+		assertThat(spp(2, 0, 0).get(10), is(p(2, 2)));
+		assertThat(spp(2, 0, 0).get(23), is(p(2, -1)));
 	}
 
 	private List<Point> spp(int size, int x, int y) {

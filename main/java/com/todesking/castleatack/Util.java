@@ -21,10 +21,8 @@ public class Util {
 	 * @param center
 	 * @return
 	 */
-	public static Iterable<Point> spiralPoints(final int size,
+	public static Iterable<Point> spiralPoints(final int ring,
 			final Point center) {
-		if (size % 2 == 0)
-			throw new IllegalArgumentException();
 		return new Iterable<Point>() {
 			@Override
 			public Iterator<Point> iterator() {
@@ -35,13 +33,13 @@ public class Util {
 
 					@Override
 					public boolean hasNext() {
-						return index <= size / 2 + 1;
+						return index <= ring;
 					}
 
 					@Override
 					public Point next() {
 						// エレガントじゃないなー
-						final Point p = new Point(x, y);
+						final Point p = new Point(center.x + x, center.y + y);
 						increment();
 						return p;
 					}

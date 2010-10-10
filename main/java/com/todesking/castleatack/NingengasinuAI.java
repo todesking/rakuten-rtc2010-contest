@@ -14,8 +14,6 @@ import jp.ac.washi.quinte.api.SoldierAction;
 import jp.ac.washi.quinte.api.TileInfo;
 import jp.ac.washi.quinte.api.TileType;
 
-import org.apache.commons.lang.NotImplementedException;
-
 import com.google.common.collect.Lists;
 
 public class NingengasinuAI implements PlayerAI {
@@ -43,7 +41,8 @@ public class NingengasinuAI implements PlayerAI {
 		int[][] targetTilePlacement = getTilePlacement(info);
 
 		final List<Point> mismatchedPoints =
-			getMismatchedPoints(info, targetTilePlacement);
+			getMismatchedPoints(info.getMap(), targetTilePlacement, info
+				.getMyCountry());
 
 		// 行動の選択 // 経路が連結されていないなら、カーソルで経路をつなぐ
 		// カーソルを使用することでよりよい経路が得られるなら、カーソルを使う
@@ -82,13 +81,38 @@ public class NingengasinuAI implements PlayerAI {
 	private CursorAction getCursorActionForFillRoute(GameInfo info,
 			int[][] targetTilePlacement, Point point) {
 		final MapInfo map = info.getMap();
+		if (map.getTile(point).getOwner() == info.getMyCountry())
+			throw new IllegalArgumentException();
 		final Point nearestMyTile =
 			getNearestTile(
 				info,
 				point,
 				info.getMyCountry(),
 				targetTilePlacement);
-		throw new NotImplementedException();
+		if (nearestMyTile == null) // not found??? wtf
+			return null;
+		if (nearestMyTile.x != point.x) {
+			if (nearestMyTile.x > point.x) {
+				return new CursorAction(RotateType.CLOCKWISE, new Point(
+					nearestMyTile.x - 1,
+					nearestMyTile.y - 1));
+			} else {
+				return new CursorAction(RotateType.ANTICLOCKWISE, new Point(
+					nearestMyTile.x,
+					nearestMyTile.y - 1));
+			}
+		} else {
+			// y is diffferent
+			if (nearestMyTile.y > point.y) {
+				return new CursorAction(RotateType.ANTICLOCKWISE, new Point(
+					nearestMyTile.x + 1,
+					nearestMyTile.y));
+			} else {
+				return new CursorAction(RotateType.CLOCKWISE, new Point(
+					nearestMyTile.x + 1,
+					nearestMyTile.y + 1));
+			}
+		}
 	}
 
 	private Point getNearestTile(GameInfo info, Point point,
@@ -105,8 +129,8 @@ public class NingengasinuAI implements PlayerAI {
 		return null; // wtf
 	}
 
-	private List<Point> getMismatchedPoints(GameInfo info,
-			int[][] targetTilePlacement) {
+	private List<Point> getMismatchedPoints(MapInfo map,
+			int[][] targetTilePlacement, CountryInfo myCountry) {
 		final List<Point> result = Lists.newArrayList();
 		for (int y = 0; y < targetTilePlacement.length; y++) {
 			for (int x = 0; x < targetTilePlacement[0].length; x++) {
@@ -114,7 +138,8 @@ public class NingengasinuAI implements PlayerAI {
 				case T_DONT_CARE:
 					break; // do nothing
 				case T_MY_ROAD:
-					result.add(Point.create(x, y));
+					if (map.getTile(x, y).getOwner() != myCountry)
+						result.add(Point.create(x, y));
 					break;
 				default:
 					throw new AssertionError();

@@ -1,6 +1,7 @@
 package com.todesking.castleatack;
 
 import java.io.PrintStream;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -48,9 +49,6 @@ public class NingengasinuAI implements PlayerAI {
 		// とりあえず右の小門を対象とする
 		attackTarget = new Point(16, 12);
 
-		// 経路の決定
-		// 戦士から対象までの経路を決定する
-
 		// 攻撃検知
 		if (info.getMyCountry().getScore() < prevScore)
 			deffensiveTimer = 30;
@@ -74,22 +72,48 @@ public class NingengasinuAI implements PlayerAI {
 		final List<Point> mismatchedPoints =
 			getMismatchedPoints(info.getMap(), info.getMyCountry());
 
-		// 行動の選択 // 経路が連結されていないなら、カーソルで経路をつなぐ
-		// カーソルを使用することでよりよい経路が得られるなら、カーソルを使う
+		// 行動の選択
 
 		CursorAction ca = null;
 		if (!mismatchedPoints.isEmpty()) {
 			// 経路ができてなかったら作る
-			Collections.sort(mismatchedPoints, new Comparator<Point>() {
-				@Override
-				public int compare(Point o1, Point o2) {
-					final Point soldierLocation =
-						info.getMySoldier().getLocation();
-					final int d1 = Util.manhattanDistance(soldierLocation, o1);
-					final int d2 = Util.manhattanDistance(soldierLocation, o2);
-					return Double.compare(d1, d2);
-				}
-			});
+			final Point soldierLocation = info.getMySoldier().getLocation();
+			if (2 < Util.manhattanDistance(soldierLocation, attackTarget)) {
+				Collections.sort(mismatchedPoints, new Comparator<Point>() {
+					@Override
+					public int compare(Point o1, Point o2) {
+						final int d1 =
+							Util.manhattanDistance(soldierLocation, o1);
+						final int d2 =
+							Util.manhattanDistance(soldierLocation, o2);
+						return Double.compare(d1, d2);
+					}
+				});
+			} else {
+				final List<Point> gateLocations =
+					Arrays.asList(
+						new Point(16, 4),
+						new Point(16, 7),
+						new Point(16, 8),
+						new Point(16, 9),
+						new Point(16, 12));
+				Collections.sort(mismatchedPoints, new Comparator<Point>() {
+					@Override
+					public int compare(Point o1, Point o2) {
+						int minDist1 = Integer.MAX_VALUE;
+						int minDist2 = Integer.MAX_VALUE;
+						for (Point g : gateLocations) {
+							minDist1 =
+								Math.min(minDist1, Util
+									.manhattanDistance(g, o1));
+							minDist2 =
+								Math.min(minDist2, Util
+									.manhattanDistance(g, o2));
+						}
+						return Double.compare(minDist1, minDist2);
+					}
+				});
+			}
 			final Point fillTargetPoint = mismatchedPoints.get(0);
 			log.println("try to make road: " + Util.inspect(fillTargetPoint));
 			ca = getCursorActionForFillRoute(info, fillTargetPoint);
@@ -298,6 +322,11 @@ public class NingengasinuAI implements PlayerAI {
 		int dist = currentDist;
 		for (Direction dir : Direction.values()) {
 			final Point candidatePoint = dir.moveFrom(currentLocation);
+			if (candidatePoint.equals(target)) {
+				System.err.println(info.getMySoldier().getLocation());
+				System.err.println(dir);
+				return SoldierAction.fromDirection(dir);
+			}
 			final TileInfo tile = info.getMap().getTile(candidatePoint);
 			if (tile == null || (!tile.isGate() && tile.getOwner() != country))
 				continue;

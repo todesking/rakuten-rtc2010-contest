@@ -8,6 +8,7 @@ import jp.ac.washi.quinte.api.Player;
 import jp.ac.washi.quinte.api.Point;
 import jp.ac.washi.quinte.api.RotateType;
 import jp.ac.washi.quinte.api.SoldierAction;
+import jp.ac.washi.quinte.api.TileInfo;
 
 public class PlayerAdapter extends Player {
 	public PlayerAdapter(PlayerAI ai) {
@@ -42,8 +43,8 @@ public class PlayerAdapter extends Player {
 			sa == SoldierAction.NONE ? currentSoldierPosition : sa
 				.toDirection()
 				.moveFrom(currentSoldierPosition);
-		check(info.getMap().getTile(nextSoldierPosition).getOwner() == info
-			.getMyCountry(), "could not move");
+		final TileInfo tile = info.getMap().getTile(nextSoldierPosition);
+		check(tile.isMovable(), "could not move");
 	}
 
 	private static void check(boolean condition, String msg) {

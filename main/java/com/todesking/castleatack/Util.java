@@ -46,6 +46,10 @@ public class Util {
 		return new Point(p.x - 1, p.y);
 	}
 
+	public static Point down(Point p) {
+		return new Point(p.x, p.y + 1);
+	}
+
 	public static boolean cointoss() {
 		return RandomUtils.nextBoolean();
 	}
@@ -236,4 +240,5 @@ public class Util {
 			return nullPrintStream;
 		}
 	}
+
 }

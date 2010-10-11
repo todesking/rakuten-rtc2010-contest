@@ -86,6 +86,7 @@ public class NingengasinuAI implements PlayerAI {
 	private CursorAction getCursorActionForFillRoute(GameInfo info,
 			int[][] targetTilePlacement, Point point) {
 		final MapInfo map = info.getMap();
+		final CountryInfo country = info.getMyCountry();
 		if (map.getTile(point).getOwner() == info.getMyCountry())
 			throw new IllegalArgumentException();
 		final Point nearestMyTile =
@@ -98,34 +99,59 @@ public class NingengasinuAI implements PlayerAI {
 		if (nearestMyTile == null) // not found??? wtf
 			return null;
 		if (nearestMyTile.x == point.x)
-			return moveY(map, targetTilePlacement, point, nearestMyTile);
+			return moveY(
+				map,
+				targetTilePlacement,
+				point,
+				nearestMyTile,
+				country);
 		else if (nearestMyTile.y == point.y)
-			return moveX(map, targetTilePlacement, point, nearestMyTile);
-		else
-			return Util.cointoss() ? moveX(
+			return moveX(
 				map,
 				targetTilePlacement,
 				point,
-				nearestMyTile) : moveY(
-				map,
-				targetTilePlacement,
-				point,
-				nearestMyTile);
+				nearestMyTile,
+				country);
+		else {
+			if (yBlocked(map, country, nearestMyTile) || Util.cointoss())
+				return moveX(
+					map,
+					targetTilePlacement,
+					point,
+					nearestMyTile,
+					country);
+			else
+				return moveY(
+					map,
+					targetTilePlacement,
+					point,
+					nearestMyTile,
+					country);
+		}
+	}
+
+	private boolean yBlocked(final MapInfo map, final CountryInfo country,
+			final Point nearestMyTile) {
+		return map.getTile(Util.down(nearestMyTile)).getOwner() == country;
 	}
 
 	private CursorAction moveY(MapInfo map, int[][] targetTilePlacement,
-			Point point, final Point nearestMyTile) {
+			Point point, final Point nearestMyTile, CountryInfo country) {
 		Util.log("ai").println("moveY");
 		// y is diffferent
 		if (nearestMyTile.y > point.y) { // y-
-			if (Util.cointoss())
-				return new CursorAction(RotateType.ANTICLOCKWISE, Util
-					.upleft(nearestMyTile));
+			final Point ccw = Util.upleft(nearestMyTile);
+			final Point cw = Util.up(nearestMyTile);
+			if (Util.isRoadAllOwnedInCursor(map, cw, country)
+				|| Util.cointoss())
+				return new CursorAction(RotateType.ANTICLOCKWISE, ccw);
 			else
-				return new CursorAction(RotateType.CLOCKWISE, Util
-					.up(nearestMyTile));
+				return new CursorAction(RotateType.CLOCKWISE, cw);
 		} else { // y+
-			if (Util.cointoss())
+			final Point cw = Util.left(nearestMyTile);
+			final Point ccw = nearestMyTile;
+			if (Util.isRoadAllOwnedInCursor(map, ccw, country)
+				|| Util.cointoss())
 				return new CursorAction(RotateType.CLOCKWISE, Util
 					.left(nearestMyTile));
 			else
@@ -134,21 +160,25 @@ public class NingengasinuAI implements PlayerAI {
 	}
 
 	private CursorAction moveX(MapInfo map, int[][] targetTilePlacement,
-			Point point, final Point nearestMyTile) {
+			Point point, final Point nearestMyTile, CountryInfo country) {
 		Util.log("ai").println("moveX");
 		if (nearestMyTile.x > point.x) { // x-
-			if (Util.cointoss())
-				return new CursorAction(RotateType.ANTICLOCKWISE, Util
-					.left(nearestMyTile));
-			else
-				return new CursorAction(RotateType.CLOCKWISE, Util
-					.upleft(nearestMyTile));
+			final Point cw = Util.upleft(nearestMyTile);
+			final Point ccw = Util.left(nearestMyTile);
+			if (Util.isRoadAllOwnedInCursor(map, cw, country)
+				|| Util.cointoss()) {
+
+				return new CursorAction(RotateType.ANTICLOCKWISE, ccw);
+			} else
+				return new CursorAction(RotateType.CLOCKWISE, cw);
 		} else { // x+
-			if (Util.cointoss())
-				return new CursorAction(RotateType.CLOCKWISE, nearestMyTile);
+			final Point ccw = Util.up(nearestMyTile);
+			final Point cw = nearestMyTile;
+			if (Util.isRoadAllOwnedInCursor(map, ccw, country)
+				|| Util.cointoss())
+				return new CursorAction(RotateType.CLOCKWISE, cw);
 			else
-				return new CursorAction(RotateType.ANTICLOCKWISE, Util
-					.up(nearestMyTile));
+				return new CursorAction(RotateType.ANTICLOCKWISE, ccw);
 		}
 	}
 

@@ -53,7 +53,7 @@ public class PlayerAdapter extends Player {
 		final CursorAction ca = actionCommand.cursorAction;
 		if (ca.getType() != RotateType.NONE) {
 			check(info.getMap().canRotate(ca.getLocation()), "could not rotate");
-			check(Util.isRoadAllOwnedInCursor(
+			check(!Util.isRoadAllOwnedInCursor(
 				info.getMap(),
 				ca.getLocation(),
 				info.getMyCountry()), "meaningless rotate");

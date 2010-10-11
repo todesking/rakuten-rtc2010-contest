@@ -19,6 +19,8 @@ import jp.ac.washi.quinte.api.SoldierInfo;
 import jp.ac.washi.quinte.api.TileInfo;
 import jp.ac.washi.quinte.api.TileType;
 
+import org.apache.commons.lang.math.RandomUtils;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
@@ -27,25 +29,30 @@ public class NingengasinuAI implements PlayerAI {
 
 	private Point attackTarget = new Point(16, 12);
 	private int[][] targetTilePlacement = null;
-
+	private static final List<Point> attackTargets =
+		Arrays.asList(
+			new Point(0, 12),
+			new Point(16, 12),
+			new Point(0, 7),
+			new Point(16, 7));
+	private Point prevPos = new Point(16, 7);
+	private int freezeTurns = 0;
 	private int prevScore = 0;
 	private int deffensiveTimer = 0;
 
 	@Override
 	public CursorAction nextCursorAction(final GameInfo info) {
 		final PrintStream log = Util.log("ai");
-		// 行動方針の決定: 攻撃、防御、工作
-		// 攻撃優先
-		// やることがなかったら敵から自分への経路を破壊する
-		// 安全そうだったらスコアが高い敵を妨害
-		// →経路破壊、ボトムの敵からトップの敵への通路開拓
-
-		// とりあえず攻撃すると仮定
-
-		// 攻撃対象の選択
-		// 戦士現在位置から各城門までの到達容易性スコアを取得
-		// 到達容易性、予測される得点でランキングし攻撃対象を選択
-
+		// 止まってたらターゲットかえる
+		if (prevPos.equals(info.getMySoldier().getLocation())) {
+			freezeTurns++;
+		} else {
+			freezeTurns = 0;
+		}
+		if (freezeTurns > 20) {
+			attackTarget =
+				attackTargets.get(RandomUtils.nextInt(attackTargets.size()));
+		}
 		// 得点したらターゲット変更を考慮
 		if (info.getMyCountry().getScore() > prevScore) {
 			if (info.getLeftCountry().getScore() * 5 > info

@@ -21,7 +21,10 @@ public class Util {
 	}
 
 	public static String inspect(Point p) {
-		return "(" + p.x + "," + p.y + ")";
+		if (p == null)
+			return "NULL";
+		else
+			return "(" + p.x + "," + p.y + ")";
 	}
 
 	public static int manhattanDistance(Point p1, Point p2) {

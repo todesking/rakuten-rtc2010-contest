@@ -93,28 +93,29 @@ public class NingengasinuAI implements PlayerAI {
 				point,
 				info.getMyCountry(),
 				targetTilePlacement);
+		Util.log("ai").println("nearest tile: " + Util.inspect(nearestMyTile));
 		if (nearestMyTile == null) // not found??? wtf
 			return null;
 		if (nearestMyTile.x != point.x) {
 			if (nearestMyTile.x > point.x) {
 				return new CursorAction(RotateType.CLOCKWISE, new Point(
-					nearestMyTile.x - 1,
+					nearestMyTile.x,
 					nearestMyTile.y - 1));
 			} else {
 				return new CursorAction(RotateType.ANTICLOCKWISE, new Point(
-					nearestMyTile.x,
+					nearestMyTile.x - 1,
 					nearestMyTile.y - 1));
 			}
 		} else {
 			// y is diffferent
 			if (nearestMyTile.y > point.y) {
 				return new CursorAction(RotateType.ANTICLOCKWISE, new Point(
-					nearestMyTile.x + 1,
+					nearestMyTile.x,
 					nearestMyTile.y));
 			} else {
 				return new CursorAction(RotateType.CLOCKWISE, new Point(
-					nearestMyTile.x + 1,
-					nearestMyTile.y + 1));
+					nearestMyTile.x,
+					nearestMyTile.y - 1));
 			}
 		}
 	}
@@ -172,7 +173,7 @@ public class NingengasinuAI implements PlayerAI {
 		for (int i = 0; i < tiles.length; i++)
 			tiles[i] = new int[info.getMap().getSize()];
 
-		for (int x = 0; x <= 8; x++)
+		for (int x = 1; x <= 8; x++)
 			tiles[15][x] = 1;
 		for (int y = 8; y <= 15; y++)
 			tiles[y][15] = 1;

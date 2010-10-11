@@ -253,15 +253,7 @@ public class NingengasinuAI implements PlayerAI {
 		final Point currentLocation = info.getMySoldier().getLocation();
 		final int currentDist = Util.manhattanDistance(currentLocation, target);
 		final CountryInfo country = info.getMyCountry();
-		if (Util.inCursor(ca.getLocation(), currentLocation)) {
-			for (Direction dir : Direction.values()) {
-				final Point point = dir.moveFrom(currentLocation);
-				if (Util.inCursor(ca.getLocation(), point)
-					&& info.getMap().getTile(point).getOwner() == country) {
-					return SoldierAction.fromDirection(dir);
-				}
-			}
-		}
+
 		Direction direction = null;
 		int dist = currentDist;
 		for (Direction dir : Direction.values()) {
@@ -275,8 +267,19 @@ public class NingengasinuAI implements PlayerAI {
 				dist = d;
 			}
 		}
-		if (direction == null)
-			return SoldierAction.NONE;
+		final Point nextLoction =
+			direction == null ? currentLocation : direction
+				.moveFrom(currentLocation);
+		if (Util.inCursor(ca.getLocation(), nextLoction)) {
+			Util.log("ai").println("my soldier blocks cursor");
+			for (Direction dir : Direction.values()) {
+				final Point point = dir.moveFrom(currentLocation);
+				if (!Util.inCursor(ca.getLocation(), point)
+					&& info.getMap().getTile(point).getOwner() == country) {
+					return SoldierAction.fromDirection(dir);
+				}
+			}
+		}
 		return SoldierAction.fromDirection(direction);
 	}
 

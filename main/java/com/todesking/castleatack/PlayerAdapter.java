@@ -15,44 +15,18 @@ public class PlayerAdapter extends Player {
 	}
 
 	private final PlayerAI ai;
-	private int turnID = -1;
 
-	private static final ActionCommand DO_NOTHING =
-		new ActionCommand(
-			new CursorAction(RotateType.NONE, 0, 0),
-			SoldierAction.NONE);
-	private ActionCommand actionCommand = DO_NOTHING;
-
-	private void calcNextAction(GameInfo info) {
-		if (turnID == info.getTime())
-			return;
-		Util.log("tick").println(
-			"================== " + info.getTime() + " ====================");
-		try {
-			actionCommand = ai.getNextAction(info);
-			logAction(actionCommand);
-			if (actionCommand == null)
-				actionCommand = DO_NOTHING;
-		} catch (RuntimeException e) {
-			Util.printMapInfo(info, System.err);
-			throw e;
-		}
-		try {
-			validate(actionCommand, info);
-		} catch (AssertionError e) {
-			Util.printMapInfo(info, System.err);
-			e.printStackTrace(System.err);
-		}
-	}
-
-	private void logAction(ActionCommand ac) {
+	private void logAction(CursorAction ca) {
 		final PrintStream log = Util.log("action");
-		log.println("cursor: " + Util.inspect(ac.cursorAction));
-		log.println("soldier: " + ac.soldierAction);
+		log.println("cursor: " + Util.inspect(ca));
 	}
 
-	private void validate(ActionCommand actionCommand, GameInfo info) {
-		final CursorAction ca = actionCommand.cursorAction;
+	private void logAction(SoldierAction sa) {
+		final PrintStream log = Util.log("action");
+		log.println("soldier: " + sa);
+	}
+
+	private static void validate(CursorAction ca, GameInfo info) {
 		if (ca.getType() != RotateType.NONE) {
 			check(info.getMap().canRotate(ca.getLocation()), "could not rotate");
 			check(!Util.isRoadAllOwnedInCursor(
@@ -60,8 +34,9 @@ public class PlayerAdapter extends Player {
 				ca.getLocation(),
 				info.getMyCountry()), "meaningless rotate");
 		}
+	}
 
-		final SoldierAction sa = actionCommand.soldierAction;
+	private static void validate(SoldierAction sa, GameInfo info) {
 		final Point currentSoldierPosition = info.getMySoldier().getLocation();
 		final Point nextSoldierPosition =
 			sa == SoldierAction.NONE ? currentSoldierPosition : sa
@@ -78,13 +53,43 @@ public class PlayerAdapter extends Player {
 
 	@Override
 	public CursorAction nextCursorAction(GameInfo info) {
-		calcNextAction(info);
-		return actionCommand.cursorAction;
+		final CursorAction action;
+		try {
+			action = ai.nextCursorAction(info);
+		} catch (RuntimeException e) {
+			Util.printMapInfo(info, System.err);
+			e.printStackTrace(System.err);
+			return null;
+		}
+		logAction(action);
+		try {
+			validate(action, info);
+		} catch (AssertionError e) {
+			Util.printMapInfo(info, System.err);
+			e.printStackTrace(System.err);
+			return null;
+		}
+		return action;
 	}
 
 	@Override
 	public SoldierAction nextSoldierAction(GameInfo info) {
-		calcNextAction(info);
-		return actionCommand.soldierAction;
+		final SoldierAction action;
+		try {
+			action = ai.nextSoldierAction(info);
+		} catch (RuntimeException e) {
+			Util.printMapInfo(info, System.err);
+			e.printStackTrace(System.err);
+			return null;
+		}
+		logAction(action);
+		try {
+			validate(action, info);
+		} catch (AssertionError e) {
+			Util.printMapInfo(info, System.err);
+			e.printStackTrace(System.err);
+			return null;
+		}
+		return action;
 	}
 }

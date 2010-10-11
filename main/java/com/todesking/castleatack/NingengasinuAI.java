@@ -4,6 +4,7 @@ import java.io.PrintStream;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 
 import jp.ac.washi.quinte.api.CountryInfo;
 import jp.ac.washi.quinte.api.CursorAction;
@@ -18,11 +19,16 @@ import jp.ac.washi.quinte.api.TileInfo;
 import jp.ac.washi.quinte.api.TileType;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 public class NingengasinuAI implements PlayerAI {
 	int x = 0;
 
-	public ActionCommand getNextAction(final GameInfo info) {
+	private Point attackTarget = new Point(16, 12);
+	private int[][] targetTilePlacement = null;
+
+	@Override
+	public CursorAction nextCursorAction(final GameInfo info) {
 		final PrintStream log = Util.log("ai");
 		// 行動方針の決定: 攻撃、防御、工作
 		// 攻撃優先
@@ -37,13 +43,13 @@ public class NingengasinuAI implements PlayerAI {
 		// 到達容易性、予測される得点でランキングし攻撃対象を選択
 
 		// とりあえず右の小門を対象とする
-		final Point attackTarget = new Point(16, 12);
+		attackTarget = new Point(16, 12);
 
 		// 経路の決定
 		// 戦士から対象までの経路を決定する
 
 		// とりあえず辺に沿って移動する
-		int[][] targetTilePlacement = getTilePlacement(info, attackTarget);
+		targetTilePlacement = getTilePlacement(info, attackTarget);
 		{
 			final PrintStream tlog = Util.log("ai.tilePlacement");
 			for (int y = 0; y < targetTilePlacement.length; y++) {
@@ -55,16 +61,14 @@ public class NingengasinuAI implements PlayerAI {
 		}
 
 		final List<Point> mismatchedPoints =
-			getMismatchedPoints(info.getMap(), targetTilePlacement, info
-				.getMyCountry());
+			getMismatchedPoints(info.getMap(), info.getMyCountry());
 
 		// 行動の選択 // 経路が連結されていないなら、カーソルで経路をつなぐ
 		// カーソルを使用することでよりよい経路が得られるなら、カーソルを使う
 
-		final CursorAction ca;
+		CursorAction ca = null;
 		if (!mismatchedPoints.isEmpty()) {
-			// とりあえず決めうちの経路ができてなかったら作る
-			// 自分とこの兵士に近い道から埋めていく
+			// 経路ができてなかったら作る
 			Collections.sort(mismatchedPoints, new Comparator<Point>() {
 				@Override
 				public int compare(Point o1, Point o2) {
@@ -77,67 +81,67 @@ public class NingengasinuAI implements PlayerAI {
 			});
 			final Point fillTargetPoint = mismatchedPoints.get(0);
 			log.println("try to make road: " + Util.inspect(fillTargetPoint));
-			ca =
-				getCursorActionForFillRoute(
-					info,
-					targetTilePlacement,
-					fillTargetPoint);
+			ca = getCursorActionForFillRoute(info, fillTargetPoint);
 			log.println(Util.inspect(ca));
-		} else {
+		}
+		if (ca == null) {
 			// TODO: 経路ができてた場合、嫌がらせなど行う
 			ca = getCursorAction(info, targetTilePlacement);
 		}
-
-		// 経路に沿って移動するための戦士操作
-		final SoldierAction sa =
-			getSoldierAction(info, ca, targetTilePlacement, attackTarget);
-
-		return new ActionCommand(ca, sa);
+		return ca;
 	}
 
-	private CursorAction getCursorActionForFillRoute(GameInfo info,
-			int[][] targetTilePlacement, Point point) {
+	@Override
+	public SoldierAction nextSoldierAction(GameInfo info) {
+		return getSoldierAction(info, attackTarget);
+	}
+
+	private CursorAction getCursorActionForFillRoute(GameInfo info, Point point) {
 		final MapInfo map = info.getMap();
 		final CountryInfo country = info.getMyCountry();
 		if (map.getTile(point).getOwner() == info.getMyCountry())
 			throw new IllegalArgumentException();
-		final Point nearestMyTile =
-			getNearestTile(
-				info,
-				point,
-				info.getMyCountry(),
-				targetTilePlacement);
-		Util.log("ai").println("nearest tile: " + Util.inspect(nearestMyTile));
-		if (nearestMyTile == null) // not found??? wtf
+		final Set<Point> excludes = Sets.newHashSet();
+		CursorAction ca = null;
+		do {
+			final Point moveTarget =
+				getNearestTile(
+					info,
+					point,
+					info.getMyCountry(),
+					targetTilePlacement,
+					excludes);
+			if (moveTarget == null)
+				return null;
+			excludes.add(moveTarget);
+			ca = findMove(info, point, map, country, moveTarget);
+		} while (ca == null);
+		return ca;
+	}
+
+	private CursorAction findMove(GameInfo info, Point point,
+			final MapInfo map, final CountryInfo country, Point moveTarget) {
+		Util.log("ai").println("nearest tile: " + Util.inspect(moveTarget));
+		if (moveTarget == null) // not found??? wtf
 			return null;
-		if (nearestMyTile.x == point.x)
-			return moveY(
-				map,
-				targetTilePlacement,
-				point,
-				nearestMyTile,
-				country);
-		else if (nearestMyTile.y == point.y)
-			return moveX(
-				map,
-				targetTilePlacement,
-				point,
-				nearestMyTile,
-				country);
+		if (moveTarget.x == point.x)
+			return moveY(map, targetTilePlacement, point, moveTarget, country);
+		else if (moveTarget.y == point.y)
+			return moveX(map, targetTilePlacement, point, moveTarget, country);
 		else {
-			if (yBlocked(map, country, nearestMyTile) || Util.cointoss())
+			if (yBlocked(map, country, moveTarget) || Util.cointoss())
 				return moveX(
 					map,
 					targetTilePlacement,
 					point,
-					nearestMyTile,
+					moveTarget,
 					country);
 			else
 				return moveY(
 					map,
 					targetTilePlacement,
 					point,
-					nearestMyTile,
+					moveTarget,
 					country);
 		}
 	}
@@ -150,11 +154,13 @@ public class NingengasinuAI implements PlayerAI {
 	private CursorAction moveY(MapInfo map, int[][] targetTilePlacement,
 			Point point, final Point nearestMyTile, CountryInfo country) {
 		Util.log("ai").println("moveY");
-		// y is diffferent
 		if (nearestMyTile.y > point.y) { // y-
 			final Point ccw = Util.upleft(nearestMyTile);
 			final Point cw = Util.up(nearestMyTile);
+			if (!map.canRotate(cw) && !map.canRotate(ccw))
+				return null;
 			if (Util.isRoadAllOwnedInCursor(map, cw, country)
+				|| !map.canRotate(cw)
 				|| Util.cointoss())
 				return new CursorAction(RotateType.ANTICLOCKWISE, ccw);
 			else
@@ -162,7 +168,10 @@ public class NingengasinuAI implements PlayerAI {
 		} else { // y+
 			final Point cw = Util.left(nearestMyTile);
 			final Point ccw = nearestMyTile;
+			if (!map.canRotate(cw) && !map.canRotate(ccw))
+				return null;
 			if (Util.isRoadAllOwnedInCursor(map, ccw, country)
+				|| !map.canRotate(ccw)
 				|| Util.cointoss())
 				return new CursorAction(RotateType.CLOCKWISE, cw);
 			else
@@ -176,16 +185,21 @@ public class NingengasinuAI implements PlayerAI {
 		if (nearestMyTile.x > point.x) { // x-
 			final Point cw = Util.upleft(nearestMyTile);
 			final Point ccw = Util.left(nearestMyTile);
+			if (!map.canRotate(cw) && !map.canRotate(ccw))
+				return null;
 			if (Util.isRoadAllOwnedInCursor(map, cw, country)
+				|| map.canRotate(cw)
 				|| Util.cointoss()) {
-
 				return new CursorAction(RotateType.ANTICLOCKWISE, ccw);
 			} else
 				return new CursorAction(RotateType.CLOCKWISE, cw);
 		} else { // x+
 			final Point ccw = Util.up(nearestMyTile);
 			final Point cw = nearestMyTile;
+			if (!map.canRotate(cw) && !map.canRotate(ccw))
+				return null;
 			if (Util.isRoadAllOwnedInCursor(map, ccw, country)
+				|| !map.canRotate(ccw)
 				|| Util.cointoss())
 				return new CursorAction(RotateType.CLOCKWISE, cw);
 			else
@@ -194,7 +208,8 @@ public class NingengasinuAI implements PlayerAI {
 	}
 
 	private Point getNearestTile(GameInfo info, Point point,
-			CountryInfo country, int[][] targetTilePlacement) {
+			CountryInfo country, int[][] targetTilePlacement,
+			Set<Point> excludes) {
 		final MapInfo map = info.getMap();
 		final int size = map.getSize();
 		boolean surrounded =
@@ -205,16 +220,23 @@ public class NingengasinuAI implements PlayerAI {
 			if (!Util.between(p.x, 0, size - 1)
 				|| !Util.between(p.y, 0, size - 1))
 				continue;
+			if (excludes.contains(p))
+				continue;
 			final TileInfo tile = map.getTile(p);
 			if (tile == null)
 				continue;
 			if (tile.getType() != TileType.ROAD)
 				continue;
+			int surroundSoldiers = 0;
 			for (SoldierInfo s : Util.getSoldiers(info)) {
+				if (s.getLocation().equals(p))
+					continue loop;
 				for (Point pp : Util.spiralPoints(1, p))
 					if (s.getLocation().equals(pp))
-						continue loop;
+						surroundSoldiers++;
 			}
+			if (surroundSoldiers > 3)
+				continue loop;
 			if (tile.getOwner() == country
 				&& (surrounded || targetTilePlacement[p.y][p.x] == T_DONT_CARE))
 				return p;
@@ -237,8 +259,7 @@ public class NingengasinuAI implements PlayerAI {
 		return blocked == 4;
 	}
 
-	private List<Point> getMismatchedPoints(MapInfo map,
-			int[][] targetTilePlacement, CountryInfo myCountry) {
+	private List<Point> getMismatchedPoints(MapInfo map, CountryInfo myCountry) {
 		final List<Point> result = Lists.newArrayList();
 		for (int y = 0; y < targetTilePlacement.length; y++) {
 			for (int x = 0; x < targetTilePlacement[0].length; x++) {
@@ -257,8 +278,7 @@ public class NingengasinuAI implements PlayerAI {
 		return result;
 	}
 
-	private SoldierAction getSoldierAction(GameInfo info, CursorAction ca,
-			int[][] targetTilePlacement, Point target) {
+	private SoldierAction getSoldierAction(GameInfo info, Point target) {
 		final Point currentLocation = info.getMySoldier().getLocation();
 		final int currentDist = Util.manhattanDistance(currentLocation, target);
 		final CountryInfo country = info.getMyCountry();
@@ -268,27 +288,27 @@ public class NingengasinuAI implements PlayerAI {
 		for (Direction dir : Direction.values()) {
 			final Point candidatePoint = dir.moveFrom(currentLocation);
 			final TileInfo tile = info.getMap().getTile(candidatePoint);
-			if (tile == null || tile.getOwner() != country)
+			if (tile == null || (!tile.isGate() && tile.getOwner() != country))
 				continue;
 			final int d = Util.manhattanDistance(candidatePoint, target);
-			if (d < dist && !Util.inCursor(ca.getLocation(), candidatePoint)) {
+			if (d < dist) {
 				direction = dir;
 				dist = d;
 			}
 		}
-		final Point nextLoction =
-			direction == null ? currentLocation : direction
-				.moveFrom(currentLocation);
-		if (Util.inCursor(ca.getLocation(), nextLoction)) {
-			Util.log("ai").println("my soldier blocks cursor");
-			for (Direction dir : Direction.values()) {
-				final Point point = dir.moveFrom(currentLocation);
-				if (!Util.inCursor(ca.getLocation(), point)
-					&& info.getMap().getTile(point).getOwner() == country) {
-					return SoldierAction.fromDirection(dir);
-				}
-			}
-		}
+		// final Point nextLoction =
+		// direction == null ? currentLocation : direction
+		// .moveFrom(currentLocation);
+		// if (Util.inCursor(ca.getLocation(), nextLoction)) {
+		// Util.log("ai").println("my soldier blocks cursor");
+		// for (Direction dir : Direction.values()) {
+		// final Point point = dir.moveFrom(currentLocation);
+		// if (!Util.inCursor(ca.getLocation(), point)
+		// && info.getMap().getTile(point).getOwner() == country) {
+		// return SoldierAction.fromDirection(dir);
+		// }
+		// }
+		// }
 		return SoldierAction.fromDirection(direction);
 	}
 

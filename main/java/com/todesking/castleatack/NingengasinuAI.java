@@ -297,6 +297,12 @@ public class NingengasinuAI implements PlayerAI {
 		for (int i = 0; i < tiles.length; i++)
 			tiles[i] = new int[info.getMap().getSize()];
 
+		tiles[15][4] = 1;
+		tiles[15][7] = 1;
+		tiles[15][8] = 1;
+		tiles[15][9] = 1;
+		tiles[15][12] = 1;
+
 		for (int x = 7; x <= 15; x++)
 			tiles[15][x] = 1;
 		for (int y = 8; y <= 15; y++)

@@ -27,6 +27,9 @@ public class NingengasinuAI implements PlayerAI {
 	private Point attackTarget = new Point(16, 12);
 	private int[][] targetTilePlacement = null;
 
+	private int prevScore = 0;
+	private int deffensiveTimer = 0;
+
 	@Override
 	public CursorAction nextCursorAction(final GameInfo info) {
 		final PrintStream log = Util.log("ai");
@@ -48,8 +51,16 @@ public class NingengasinuAI implements PlayerAI {
 		// 経路の決定
 		// 戦士から対象までの経路を決定する
 
-		// とりあえず辺に沿って移動する
-		targetTilePlacement = getTilePlacement(info, attackTarget);
+		// 攻撃検知
+		if (info.getMyCountry().getScore() < prevScore)
+			deffensiveTimer = 30;
+		if (0 < deffensiveTimer) {
+			targetTilePlacement = getTilePlacementForDefence(info);
+		} else {
+			targetTilePlacement = getTilePlacement(info, attackTarget);
+		}
+		deffensiveTimer--;
+
 		{
 			final PrintStream tlog = Util.log("ai.tilePlacement");
 			for (int y = 0; y < targetTilePlacement.length; y++) {
@@ -340,6 +351,24 @@ public class NingengasinuAI implements PlayerAI {
 			tiles[py][x] = 1;
 		for (int y : Util.range(py, clip(attackTarget.y, 1, 15)))
 			tiles[y][15] = 1;
+		return tiles;
+	}
+
+	private int[][] getTilePlacementForDefence(GameInfo info) {
+		final int[][] tiles = new int[info.getMap().getSize()][];
+		for (int i = 0; i < tiles.length; i++)
+			tiles[i] = new int[info.getMap().getSize()];
+
+		tiles[15][3] = 1;
+		tiles[15][4] = 1;
+		tiles[15][5] = 1;
+		tiles[15][7] = 1;
+		tiles[15][8] = 1;
+		tiles[15][9] = 1;
+		tiles[15][11] = 1;
+		tiles[15][12] = 1;
+		tiles[15][13] = 1;
+
 		return tiles;
 	}
 

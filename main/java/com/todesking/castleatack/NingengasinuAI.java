@@ -1,5 +1,6 @@
 package com.todesking.castleatack;
 
+import java.io.PrintStream;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -20,6 +21,7 @@ public class NingengasinuAI implements PlayerAI {
 	int x = 0;
 
 	public ActionCommand getNextAction(final GameInfo info) {
+		final PrintStream log = Util.log("ai");
 		// 行動方針の決定: 攻撃、防御、工作
 		// 攻撃優先
 		// やることがなかったら敵から自分への経路を破壊する
@@ -62,11 +64,13 @@ public class NingengasinuAI implements PlayerAI {
 				}
 			});
 			final Point fillTargetPoint = mismatchedPoints.get(0);
+			log.println("try to make road: " + Util.inspect(fillTargetPoint));
 			ca =
 				getCursorActionForFillRoute(
 					info,
 					targetTilePlacement,
 					fillTargetPoint);
+			log.println(Util.inspect(ca));
 		} else {
 			// TODO: 経路ができてた場合、嫌がらせなど行う
 			ca = getCursorAction(info, targetTilePlacement);

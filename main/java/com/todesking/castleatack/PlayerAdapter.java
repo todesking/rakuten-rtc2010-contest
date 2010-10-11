@@ -1,5 +1,7 @@
 package com.todesking.castleatack;
 
+import java.io.PrintStream;
+
 import jp.ac.washi.quinte.api.CursorAction;
 import jp.ac.washi.quinte.api.GameInfo;
 import jp.ac.washi.quinte.api.Player;
@@ -24,6 +26,8 @@ public class PlayerAdapter extends Player {
 	private void calcNextAction(GameInfo info) {
 		if (turnID == info.getTime())
 			return;
+		Util.log("tick").println(
+			"================== " + info.getTime() + " ====================");
 		actionCommand = ai.getNextAction(info);
 		logAction(actionCommand);
 		if (actionCommand == null)
@@ -32,14 +36,9 @@ public class PlayerAdapter extends Player {
 	}
 
 	private void logAction(ActionCommand ac) {
-		System.err.println("cursor: " + inspect(ac.cursorAction));
-		System.err.println("soldier: " + ac.soldierAction);
-	}
-
-	private static String inspect(CursorAction ca) {
-		if (ca.getType() == RotateType.NONE)
-			return "(none)";
-		return "(" + ca.getX() + "," + ca.getY() + "), " + ca.getType();
+		final PrintStream log = Util.log("action");
+		log.println("cursor: " + Util.inspect(ac.cursorAction));
+		log.println("soldier: " + ac.soldierAction);
 	}
 
 	private void validate(ActionCommand actionCommand, GameInfo info) {

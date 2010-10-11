@@ -1,15 +1,29 @@
 package com.todesking.castleatack;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.Iterator;
 
+import jp.ac.washi.quinte.api.CursorAction;
 import jp.ac.washi.quinte.api.GameInfo;
 import jp.ac.washi.quinte.api.Point;
+import jp.ac.washi.quinte.api.RotateType;
 import jp.ac.washi.quinte.api.TileInfo;
 
 import com.google.common.collect.UnmodifiableIterator;
 
 public class Util {
+	public static String inspect(CursorAction ca) {
+		if (ca.getType() == RotateType.NONE)
+			return "CURSOR: (none)";
+		return "CURSOR: (" + ca.getX() + "," + ca.getY() + "), " + ca.getType();
+	}
+
+	public static String inspect(Point p) {
+		return "(" + p.x + "," + p.y + ")";
+	}
+
 	public static int manhattanDistance(Point p1, Point p2) {
 		return Math.abs(p1.x - p2.x) + Math.abs(p1.y - p2.y);
 	}
@@ -115,4 +129,18 @@ public class Util {
 		}
 	}
 
+	private static final PrintStream nullPrintStream =
+		new PrintStream(new OutputStream() {
+			@Override
+			public void write(int b) throws IOException {
+			}
+		});
+
+	public static PrintStream log(String type) {
+		if (System.getProperty("config.log." + type) != null)
+			return System.err;
+		else {
+			return nullPrintStream;
+		}
+	}
 }

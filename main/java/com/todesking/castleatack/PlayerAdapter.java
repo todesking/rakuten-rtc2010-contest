@@ -28,11 +28,19 @@ public class PlayerAdapter extends Player {
 			return;
 		Util.log("tick").println(
 			"================== " + info.getTime() + " ====================");
-		actionCommand = ai.getNextAction(info);
-		logAction(actionCommand);
-		if (actionCommand == null)
-			actionCommand = DO_NOTHING;
-		validate(actionCommand, info);
+		try {
+			actionCommand = ai.getNextAction(info);
+			logAction(actionCommand);
+			if (actionCommand == null)
+				actionCommand = DO_NOTHING;
+			validate(actionCommand, info);
+		} catch (RuntimeException e) {
+			Util.printMapInfo(info, System.err);
+			throw e;
+		} catch (AssertionError e) {
+			Util.printMapInfo(info, System.err);
+			throw e;
+		}
 	}
 
 	private void logAction(ActionCommand ac) {
@@ -43,7 +51,13 @@ public class PlayerAdapter extends Player {
 
 	private void validate(ActionCommand actionCommand, GameInfo info) {
 		final CursorAction ca = actionCommand.cursorAction;
-		check(info.getMap().canRotate(ca.getLocation()), "could not rotate");
+		if (ca.getType() != RotateType.NONE) {
+			check(info.getMap().canRotate(ca.getLocation()), "could not rotate");
+			check(Util.isRoadAllOwnedInCursor(
+				info.getMap(),
+				ca.getLocation(),
+				info.getMyCountry()), "meaningless rotate");
+		}
 
 		final SoldierAction sa = actionCommand.soldierAction;
 		final Point currentSoldierPosition = info.getMySoldier().getLocation();

@@ -7,6 +7,7 @@ import java.util.List;
 
 import jp.ac.washi.quinte.api.CountryInfo;
 import jp.ac.washi.quinte.api.CursorAction;
+import jp.ac.washi.quinte.api.Direction;
 import jp.ac.washi.quinte.api.GameInfo;
 import jp.ac.washi.quinte.api.MapInfo;
 import jp.ac.washi.quinte.api.Point;
@@ -96,27 +97,58 @@ public class NingengasinuAI implements PlayerAI {
 		Util.log("ai").println("nearest tile: " + Util.inspect(nearestMyTile));
 		if (nearestMyTile == null) // not found??? wtf
 			return null;
-		if (nearestMyTile.x != point.x) {
-			if (nearestMyTile.x > point.x) {
-				return new CursorAction(RotateType.CLOCKWISE, new Point(
-					nearestMyTile.x - 1,
-					nearestMyTile.y - 1));
-			} else {
-				return new CursorAction(RotateType.ANTICLOCKWISE, new Point(
-					nearestMyTile.x,
-					nearestMyTile.y - 1));
-			}
-		} else {
-			// y is diffferent
-			if (nearestMyTile.y > point.y) {
-				return new CursorAction(RotateType.CLOCKWISE, new Point(
-					nearestMyTile.x,
-					nearestMyTile.y - 1));
-			} else {
-				return new CursorAction(RotateType.ANTICLOCKWISE, new Point(
-					nearestMyTile.x,
-					nearestMyTile.y));
-			}
+		if (nearestMyTile.x == point.x)
+			return moveY(map, targetTilePlacement, point, nearestMyTile);
+		else if (nearestMyTile.y == point.y)
+			return moveX(map, targetTilePlacement, point, nearestMyTile);
+		else
+			return Util.cointoss() ? moveX(
+				map,
+				targetTilePlacement,
+				point,
+				nearestMyTile) : moveY(
+				map,
+				targetTilePlacement,
+				point,
+				nearestMyTile);
+	}
+
+	private CursorAction moveY(MapInfo map, int[][] targetTilePlacement,
+			Point point, final Point nearestMyTile) {
+		Util.log("ai").println("moveY");
+		// y is diffferent
+		if (nearestMyTile.y > point.y) { // y-
+			if (Util.cointoss())
+				return new CursorAction(RotateType.ANTICLOCKWISE, Util
+					.upleft(nearestMyTile));
+			else
+				return new CursorAction(RotateType.CLOCKWISE, Util
+					.up(nearestMyTile));
+		} else { // y+
+			if (Util.cointoss())
+				return new CursorAction(RotateType.CLOCKWISE, Util
+					.left(nearestMyTile));
+			else
+				return new CursorAction(RotateType.ANTICLOCKWISE, nearestMyTile);
+		}
+	}
+
+	private CursorAction moveX(MapInfo map, int[][] targetTilePlacement,
+			Point point, final Point nearestMyTile) {
+		Util.log("ai").println("moveX");
+		if (nearestMyTile.x > point.x) { // x-
+			if (Util.cointoss())
+				return new CursorAction(RotateType.ANTICLOCKWISE, Util
+					.left(nearestMyTile));
+			else
+				return new CursorAction(RotateType.CLOCKWISE, Util
+					.upleft(nearestMyTile));
+		} else { // x+
+			if (Util.cointoss())
+				return new CursorAction(RotateType.CLOCKWISE, nearestMyTile);
+			else
+				return new CursorAction(RotateType.ANTICLOCKWISE, Util
+					.up(nearestMyTile));
 		}
 	}
 
@@ -124,18 +156,39 @@ public class NingengasinuAI implements PlayerAI {
 			CountryInfo country, int[][] targetTilePlacement) {
 		final MapInfo map = info.getMap();
 		final int size = map.getSize();
+		boolean surrounded =
+			isSurrounded(map, point, targetTilePlacement, country);
+		if (surrounded)
+			Util.log("ai").println("its surrounded.");
 		for (Point p : Util.nearPoints(size, point)) {
 			if (!Util.between(p.x, 0, size - 1)
 				|| !Util.between(p.y, 0, size - 1))
 				continue;
 			final TileInfo tile = map.getTile(p);
-			if (tile != null
-				&& tile.getType() == TileType.ROAD
-				&& tile.getOwner() == country
-				&& targetTilePlacement[p.y][p.x] == T_DONT_CARE)
+			if (tile == null)
+				continue;
+			if (tile.getType() != TileType.ROAD)
+				continue;
+			if (tile.getOwner() == country
+				&& (surrounded || targetTilePlacement[p.y][p.x] == T_DONT_CARE))
 				return p;
 		}
 		return null; // wtf
+	}
+
+	private boolean isSurrounded(MapInfo map, Point point,
+			int[][] targetTilePlacement, CountryInfo country) {
+		int blocked = 0;
+		for (Direction d : Direction.values()) {
+			final Point p = d.moveFrom(point);
+			if ((targetTilePlacement[p.y][p.x] != T_DONT_CARE && map
+				.getTile(p)
+				.getOwner() == country)
+				|| map.getTile(p).getType() != TileType.ROAD) {
+				blocked++;
+			}
+		}
+		return blocked == 4;
 	}
 
 	private List<Point> getMismatchedPoints(MapInfo map,

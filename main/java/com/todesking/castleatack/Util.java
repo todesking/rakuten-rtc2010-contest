@@ -6,16 +6,50 @@ import java.io.PrintStream;
 import java.util.Iterator;
 import java.util.List;
 
+import jp.ac.washi.quinte.api.CountryInfo;
 import jp.ac.washi.quinte.api.CursorAction;
 import jp.ac.washi.quinte.api.GameInfo;
+import jp.ac.washi.quinte.api.MapInfo;
 import jp.ac.washi.quinte.api.Point;
 import jp.ac.washi.quinte.api.RotateType;
 import jp.ac.washi.quinte.api.TileInfo;
+import jp.ac.washi.quinte.api.TileType;
+
+import org.apache.commons.lang.math.RandomUtils;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.UnmodifiableIterator;
 
 public class Util {
+	public static boolean isRoadAllOwnedInCursor(MapInfo map, Point p,
+			CountryInfo country) {
+		for (int x = p.x; x < p.x + 2; x++) {
+			for (int y = p.y; y < p.y + 2; y++) {
+				final TileInfo tile = map.getTile(x, y);
+				if (tile.getType() == TileType.ROAD
+					&& tile.getOwner() != country)
+					return false;
+			}
+		}
+		return true;
+	}
+
+	public static Point up(Point p) {
+		return new Point(p.x, p.y - 1);
+	}
+
+	public static Point upleft(Point p) {
+		return new Point(p.x - 1, p.y - 1);
+	}
+
+	public static Point left(Point p) {
+		return new Point(p.x - 1, p.y);
+	}
+
+	public static boolean cointoss() {
+		return RandomUtils.nextBoolean();
+	}
+
 	public static String inspect(CursorAction ca) {
 		if (ca.getType() == RotateType.NONE)
 			return "CURSOR: (none)";

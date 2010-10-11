@@ -33,13 +33,15 @@ public class PlayerAdapter extends Player {
 			logAction(actionCommand);
 			if (actionCommand == null)
 				actionCommand = DO_NOTHING;
-			validate(actionCommand, info);
 		} catch (RuntimeException e) {
 			Util.printMapInfo(info, System.err);
 			throw e;
+		}
+		try {
+			validate(actionCommand, info);
 		} catch (AssertionError e) {
 			Util.printMapInfo(info, System.err);
-			throw e;
+			e.printStackTrace(System.err);
 		}
 	}
 

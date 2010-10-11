@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.Iterator;
+import java.util.List;
 
 import jp.ac.washi.quinte.api.CursorAction;
 import jp.ac.washi.quinte.api.GameInfo;
@@ -11,6 +12,7 @@ import jp.ac.washi.quinte.api.Point;
 import jp.ac.washi.quinte.api.RotateType;
 import jp.ac.washi.quinte.api.TileInfo;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.UnmodifiableIterator;
 
 public class Util {
@@ -29,6 +31,60 @@ public class Util {
 
 	public static int manhattanDistance(Point p1, Point p2) {
 		return Math.abs(p1.x - p2.x) + Math.abs(p1.y - p2.y);
+	}
+
+	/**
+	 * 指定した座標からマンハッタン距離で近い順に位置を列挙。位置ゼロ(自分)は含まない
+	 * 
+	 * @param maxDist
+	 * @return
+	 */
+	public static Iterable<Point> nearPoints(final int maxDist,
+			final Point center) {
+		return new Iterable<Point>() {
+			@Override
+			public Iterator<Point> iterator() {
+				return new UnmodifiableIterator<Point>() {
+					private int currentDist = 1;
+					private int index = 0;
+					private final List<Point> points = Lists.newArrayList();
+
+					@Override
+					public boolean hasNext() {
+						return maxDist > 0 && currentDist <= maxDist;
+					}
+
+					@Override
+					public Point next() {
+						if (points.isEmpty())
+							initialize(currentDist);
+						final Point p = center.add(points.get(index));
+						increment();
+						return p;
+					}
+
+					private void increment() {
+						index++;
+						if (points.size() <= index) {
+							initialize(currentDist + 1);
+						}
+					}
+
+					private void initialize(int d) {
+						currentDist = d;
+						index = 0;
+						points.clear();
+						for (int i = 0; i < currentDist; i++) {
+							points.add(new Point(i, i - currentDist));
+							points.add(new Point(currentDist - i, i));
+							points.add(new Point(-i, currentDist - i));
+							points.add(new Point(i - currentDist, -i));
+						}
+					}
+				};
+			}
+		};
+
 	}
 
 	/**

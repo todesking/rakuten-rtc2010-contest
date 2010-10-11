@@ -30,8 +30,26 @@ public class UtilTest {
 		assertThat(spp(2, 0, 0).get(23), is(p(2, -1)));
 	}
 
-	private List<Point> spp(int size, int x, int y) {
-		return Lists.newArrayList(Util.spiralPoints(size, p(x, y)));
+	@Test
+	public void test_nearPoints() throws Exception {
+		assertThat(nps(0).size(), is(0));
+		assertThat(nps(1).size(), is(4));
+		assertThat(nps(2).size(), is(4 + 8));
+		assertThat(nps(1), is(not(hasItem(p(1, 1)))));
+		assertThat(nps(2), is(hasItem(p(1, 1))));
+		assertThat(nps(1, p(100, 100)), is(hasItem(p(101, 100))));
+	}
+
+	private List<Point> nps(int dist) {
+		return nps(dist, p(0, 0));
+	}
+
+	private List<Point> nps(int dist, Point center) {
+		return Lists.newArrayList(Util.nearPoints(dist, center));
+	}
+
+	private List<Point> spp(int ring, int x, int y) {
+		return Lists.newArrayList(Util.spiralPoints(ring, p(x, y)));
 	}
 
 	private Point p(int x, int y) {

@@ -99,23 +99,23 @@ public class NingengasinuAI implements PlayerAI {
 		if (nearestMyTile.x != point.x) {
 			if (nearestMyTile.x > point.x) {
 				return new CursorAction(RotateType.CLOCKWISE, new Point(
-					nearestMyTile.x,
+					nearestMyTile.x - 1,
 					nearestMyTile.y - 1));
 			} else {
 				return new CursorAction(RotateType.ANTICLOCKWISE, new Point(
-					nearestMyTile.x - 1,
+					nearestMyTile.x,
 					nearestMyTile.y - 1));
 			}
 		} else {
 			// y is diffferent
 			if (nearestMyTile.y > point.y) {
-				return new CursorAction(RotateType.ANTICLOCKWISE, new Point(
-					nearestMyTile.x,
-					nearestMyTile.y));
-			} else {
 				return new CursorAction(RotateType.CLOCKWISE, new Point(
 					nearestMyTile.x,
 					nearestMyTile.y - 1));
+			} else {
+				return new CursorAction(RotateType.ANTICLOCKWISE, new Point(
+					nearestMyTile.x,
+					nearestMyTile.y));
 			}
 		}
 	}
@@ -123,7 +123,11 @@ public class NingengasinuAI implements PlayerAI {
 	private Point getNearestTile(GameInfo info, Point point,
 			CountryInfo country, int[][] targetTilePlacement) {
 		final MapInfo map = info.getMap();
-		for (Point p : Util.spiralPoints(map.getSize(), point)) {
+		final int size = map.getSize();
+		for (Point p : Util.nearPoints(size, point)) {
+			if (!Util.between(p.x, 0, size - 1)
+				|| !Util.between(p.y, 0, size - 1))
+				continue;
 			final TileInfo tile = map.getTile(p);
 			if (tile != null
 				&& tile.getType() == TileType.ROAD
@@ -173,7 +177,7 @@ public class NingengasinuAI implements PlayerAI {
 		for (int i = 0; i < tiles.length; i++)
 			tiles[i] = new int[info.getMap().getSize()];
 
-		for (int x = 1; x <= 8; x++)
+		for (int x = 7; x <= 15; x++)
 			tiles[15][x] = 1;
 		for (int y = 8; y <= 15; y++)
 			tiles[y][15] = 1;

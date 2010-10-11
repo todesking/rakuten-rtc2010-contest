@@ -17,7 +17,7 @@ public class Starter {
 		option.setEnableSound(true);
 		// setEnableThreadToLimitTime(false) はスレッドを使わないため、デバッグしやすい環境になります
 		option.setEnableThreadToLimitTime(true);
-		option.setFps(20);
+		option.setFps(30);
 		GameStarter.start(p1, p2, p3, p4, option);
 	}
 }

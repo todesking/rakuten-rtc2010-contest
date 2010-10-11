@@ -39,10 +39,17 @@ public class NingengasinuAI implements PlayerAI {
 	private int freezeTurns = 0;
 	private int prevScore = 0;
 	private int deffensiveTimer = 0;
+	private Point prevCursor = new Point(0, 0);
+	private int sameCursorTurns = 0;
 
 	@Override
 	public CursorAction nextCursorAction(final GameInfo info) {
 		final PrintStream log = Util.log("ai");
+		// ずっと同じカーソル操作してたらどうにかする
+		if (sameCursorTurns > 15) {
+			sameCursorTurns = 5;
+			return getRandomCursorAction(info);
+		}
 		// 止まってたらターゲットかえる
 		if (prevPos.equals(info.getMySoldier().getLocation())) {
 			freezeTurns++;
@@ -53,8 +60,9 @@ public class NingengasinuAI implements PlayerAI {
 			attackTarget =
 				attackTargets.get(RandomUtils.nextInt(attackTargets.size()));
 		}
-		// 得点したらターゲット変更を考慮
-		if (info.getMyCountry().getScore() > prevScore) {
+		// 得点/一定ターンでターゲット変更を考慮
+		if (info.getMyCountry().getScore() > prevScore
+			|| info.getTime() % 100 == 0) {
 			if (info.getLeftCountry().getScore() * 5 > info
 				.getRightCountry()
 				.getScore()
@@ -139,8 +147,11 @@ public class NingengasinuAI implements PlayerAI {
 		}
 		if (ca == null) {
 			// TODO: 経路ができてた場合、嫌がらせなど行う
-			ca = getCursorAction(info, targetTilePlacement);
+			ca = getRandomCursorAction(info);
 		}
+		if (ca.getLocation().equals(prevCursor))
+			sameCursorTurns++;
+		prevCursor = ca.getLocation();
 		return ca;
 	}
 
@@ -370,8 +381,7 @@ public class NingengasinuAI implements PlayerAI {
 		return SoldierAction.fromDirection(direction);
 	}
 
-	private CursorAction getCursorAction(GameInfo info,
-			int[][] targetTilePlacement) {
+	private CursorAction getRandomCursorAction(GameInfo info) {
 		x = (x + 1) % info.getMap().getSize();
 		return new CursorAction(RotateType.CLOCKWISE, x, 10);
 	}

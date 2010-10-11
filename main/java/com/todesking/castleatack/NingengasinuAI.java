@@ -60,7 +60,7 @@ public class NingengasinuAI implements PlayerAI {
 				.getScore()
 				|| info.getLeftCountry().getScore() > info
 					.getMyCountry()
-					.getScore()) {
+					.getScore() * 0.7) {
 				attackTarget = new Point(0, 12);
 			} else {
 				attackTarget = new Point(16, 12);

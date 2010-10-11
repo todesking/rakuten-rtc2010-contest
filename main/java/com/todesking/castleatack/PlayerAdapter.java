@@ -68,7 +68,6 @@ public class PlayerAdapter extends Player {
 		} catch (AssertionError e) {
 			Util.printMapInfo(info, System.err);
 			e.printStackTrace(System.err);
-			return null;
 		}
 		return action;
 	}
@@ -89,7 +88,6 @@ public class PlayerAdapter extends Player {
 		} catch (AssertionError e) {
 			Util.printMapInfo(info, System.err);
 			e.printStackTrace(System.err);
-			return null;
 		}
 		return action;
 	}

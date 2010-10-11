@@ -46,8 +46,19 @@ public class NingengasinuAI implements PlayerAI {
 		// 戦士現在位置から各城門までの到達容易性スコアを取得
 		// 到達容易性、予測される得点でランキングし攻撃対象を選択
 
-		// とりあえず右の小門を対象とする
-		attackTarget = new Point(16, 12);
+		// 得点したらターゲット変更を考慮
+		if (info.getMyCountry().getScore() > prevScore) {
+			if (info.getLeftCountry().getScore() * 5 > info
+				.getRightCountry()
+				.getScore()
+				|| info.getLeftCountry().getScore() > info
+					.getMyCountry()
+					.getScore()) {
+				attackTarget = new Point(0, 12);
+			} else {
+				attackTarget = new Point(16, 12);
+			}
+		}
 
 		// 攻撃検知
 		if (info.getMyCountry().getScore() < prevScore)

@@ -252,12 +252,22 @@ public class NingengasinuAI implements PlayerAI {
 			int[][] targetTilePlacement, Point target) {
 		final Point currentLocation = info.getMySoldier().getLocation();
 		final int currentDist = Util.manhattanDistance(currentLocation, target);
+		final CountryInfo country = info.getMyCountry();
+		if (Util.inCursor(ca.getLocation(), currentLocation)) {
+			for (Direction dir : Direction.values()) {
+				final Point point = dir.moveFrom(currentLocation);
+				if (Util.inCursor(ca.getLocation(), point)
+					&& info.getMap().getTile(point).getOwner() == country) {
+					return SoldierAction.fromDirection(dir);
+				}
+			}
+		}
 		Direction direction = null;
 		int dist = currentDist;
 		for (Direction dir : Direction.values()) {
 			final Point candidatePoint = dir.moveFrom(currentLocation);
 			final TileInfo tile = info.getMap().getTile(candidatePoint);
-			if (tile == null || tile.getOwner() != info.getMyCountry())
+			if (tile == null || tile.getOwner() != country)
 				continue;
 			final int d = Util.manhattanDistance(candidatePoint, target);
 			if (d < dist && !Util.inCursor(ca.getLocation(), candidatePoint)) {

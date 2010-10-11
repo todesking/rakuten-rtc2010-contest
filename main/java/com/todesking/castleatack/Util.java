@@ -23,6 +23,39 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.UnmodifiableIterator;
 
 public class Util {
+	/**
+	 * start,end is inclusive
+	 * 
+	 * @param start
+	 * @param end
+	 * @return
+	 */
+	public static Iterable<Integer> range(final int start, final int end) {
+		return new Iterable<Integer>() {
+			@Override
+			public Iterator<Integer> iterator() {
+				return new UnmodifiableIterator<Integer>() {
+					int current = start;
+
+					@Override
+					public boolean hasNext() {
+						return start < end ? current <= end : end <= current;
+					}
+
+					@Override
+					public Integer next() {
+						final int x = current;
+						if (start < end)
+							current++;
+						else
+							current--;
+						return x;
+					}
+				};
+			}
+		};
+	}
+
 	public static boolean isRoadAllOwnedInCursor(MapInfo map, Point p,
 			CountryInfo country) {
 		for (int x = p.x; x < p.x + 2; x++) {

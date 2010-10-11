@@ -43,7 +43,16 @@ public class NingengasinuAI implements PlayerAI {
 		// 戦士から対象までの経路を決定する
 
 		// とりあえず辺に沿って移動する
-		int[][] targetTilePlacement = getTilePlacement(info);
+		int[][] targetTilePlacement = getTilePlacement(info, attackTarget);
+		{
+			final PrintStream tlog = Util.log("ai.tilePlacement");
+			for (int y = 0; y < targetTilePlacement.length; y++) {
+				for (int x = 0; x < targetTilePlacement[y].length; x++) {
+					tlog.print(targetTilePlacement[y][x] > 0 ? '*' : '.');
+				}
+				tlog.println();
+			}
+		}
 
 		final List<Point> mismatchedPoints =
 			getMismatchedPoints(info.getMap(), targetTilePlacement, info
@@ -292,7 +301,7 @@ public class NingengasinuAI implements PlayerAI {
 	final int T_DONT_CARE = 0;
 	final int T_MY_ROAD = 1;
 
-	private int[][] getTilePlacement(GameInfo info) {
+	private int[][] getTilePlacement(GameInfo info, Point attackTarget) {
 		final int[][] tiles = new int[info.getMap().getSize()][];
 		for (int i = 0; i < tiles.length; i++)
 			tiles[i] = new int[info.getMap().getSize()];
@@ -303,10 +312,18 @@ public class NingengasinuAI implements PlayerAI {
 		tiles[15][9] = 1;
 		tiles[15][12] = 1;
 
-		for (int x = 7; x <= 15; x++)
-			tiles[15][x] = 1;
-		for (int y = 8; y <= 15; y++)
+		final Point mySoldier = info.getMySoldier().getLocation();
+		final int px = clip(mySoldier.x, 1, 15);
+		final int py = clip(mySoldier.y, 1, 15);
+
+		for (int x : Util.range(px, clip(attackTarget.x, 1, 15)))
+			tiles[py][x] = 1;
+		for (int y : Util.range(py, clip(attackTarget.y, 1, 15)))
 			tiles[y][15] = 1;
 		return tiles;
+	}
+
+	private int clip(int value, int min, int max) {
+		return Math.min(Math.max(min, value), max);
 	}
 }

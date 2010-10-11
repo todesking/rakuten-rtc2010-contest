@@ -3,6 +3,7 @@ package com.todesking.castleatack;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -12,6 +13,7 @@ import jp.ac.washi.quinte.api.GameInfo;
 import jp.ac.washi.quinte.api.MapInfo;
 import jp.ac.washi.quinte.api.Point;
 import jp.ac.washi.quinte.api.RotateType;
+import jp.ac.washi.quinte.api.SoldierInfo;
 import jp.ac.washi.quinte.api.TileInfo;
 import jp.ac.washi.quinte.api.TileType;
 
@@ -239,6 +241,23 @@ public class Util {
 		else {
 			return nullPrintStream;
 		}
+	}
+
+	public static boolean inCursor(Point cursor, Point point) {
+		return between(point.x, cursor.x, cursor.x + 1)
+			&& between(point.y, cursor.y, cursor.y + 1);
+	}
+
+	public static List<SoldierInfo> getSoldiers(GameInfo info) {
+		final List<SoldierInfo> result = Lists.newArrayList();
+		for (CountryInfo c : allCountries(info))
+			result.add(info.getMap().getSoldier(c));
+		return result;
+	}
+
+	public static List<CountryInfo> allCountries(GameInfo info) {
+		return Arrays.asList(info.getMyCountry(), info.getLeftCountry(), info
+			.getRightCountry(), info.getOppositeCountry());
 	}
 
 }

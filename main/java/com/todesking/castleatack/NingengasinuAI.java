@@ -13,6 +13,7 @@ import jp.ac.washi.quinte.api.MapInfo;
 import jp.ac.washi.quinte.api.Point;
 import jp.ac.washi.quinte.api.RotateType;
 import jp.ac.washi.quinte.api.SoldierAction;
+import jp.ac.washi.quinte.api.SoldierInfo;
 import jp.ac.washi.quinte.api.TileInfo;
 import jp.ac.washi.quinte.api.TileType;
 
@@ -35,7 +36,8 @@ public class NingengasinuAI implements PlayerAI {
 		// 戦士現在位置から各城門までの到達容易性スコアを取得
 		// 到達容易性、予測される得点でランキングし攻撃対象を選択
 
-		// とりあえず左の小門を対象とする
+		// とりあえず右の小門を対象とする
+		final Point attackTarget = new Point(16, 12);
 
 		// 経路の決定
 		// 戦士から対象までの経路を決定する
@@ -78,7 +80,8 @@ public class NingengasinuAI implements PlayerAI {
 		}
 
 		// 経路に沿って移動するための戦士操作
-		final SoldierAction sa = getSoldierAction(info, targetTilePlacement);
+		final SoldierAction sa =
+			getSoldierAction(info, ca, targetTilePlacement, attackTarget);
 
 		return new ActionCommand(ca, sa);
 	}
@@ -152,10 +155,9 @@ public class NingengasinuAI implements PlayerAI {
 			final Point ccw = nearestMyTile;
 			if (Util.isRoadAllOwnedInCursor(map, ccw, country)
 				|| Util.cointoss())
-				return new CursorAction(RotateType.CLOCKWISE, Util
-					.left(nearestMyTile));
+				return new CursorAction(RotateType.CLOCKWISE, cw);
 			else
-				return new CursorAction(RotateType.ANTICLOCKWISE, nearestMyTile);
+				return new CursorAction(RotateType.ANTICLOCKWISE, ccw);
 		}
 	}
 
@@ -190,7 +192,7 @@ public class NingengasinuAI implements PlayerAI {
 			isSurrounded(map, point, targetTilePlacement, country);
 		if (surrounded)
 			Util.log("ai").println("its surrounded.");
-		for (Point p : Util.nearPoints(size, point)) {
+		loop: for (Point p : Util.nearPoints(size, point)) {
 			if (!Util.between(p.x, 0, size - 1)
 				|| !Util.between(p.y, 0, size - 1))
 				continue;
@@ -199,6 +201,11 @@ public class NingengasinuAI implements PlayerAI {
 				continue;
 			if (tile.getType() != TileType.ROAD)
 				continue;
+			for (SoldierInfo s : Util.getSoldiers(info)) {
+				for (Point pp : Util.spiralPoints(1, p))
+					if (s.getLocation().equals(pp))
+						continue loop;
+			}
 			if (tile.getOwner() == country
 				&& (surrounded || targetTilePlacement[p.y][p.x] == T_DONT_CARE))
 				return p;
@@ -241,9 +248,26 @@ public class NingengasinuAI implements PlayerAI {
 		return result;
 	}
 
-	private SoldierAction getSoldierAction(GameInfo info,
-			int[][] targetTilePlacement) {
-		return SoldierAction.NONE;
+	private SoldierAction getSoldierAction(GameInfo info, CursorAction ca,
+			int[][] targetTilePlacement, Point target) {
+		final Point currentLocation = info.getMySoldier().getLocation();
+		final int currentDist = Util.manhattanDistance(currentLocation, target);
+		Direction direction = null;
+		int dist = currentDist;
+		for (Direction dir : Direction.values()) {
+			final Point candidatePoint = dir.moveFrom(currentLocation);
+			final TileInfo tile = info.getMap().getTile(candidatePoint);
+			if (tile == null || tile.getOwner() != info.getMyCountry())
+				continue;
+			final int d = Util.manhattanDistance(candidatePoint, target);
+			if (d < dist && !Util.inCursor(ca.getLocation(), candidatePoint)) {
+				direction = dir;
+				dist = d;
+			}
+		}
+		if (direction == null)
+			return SoldierAction.NONE;
+		return SoldierAction.fromDirection(direction);
 	}
 
 	private CursorAction getCursorAction(GameInfo info,
